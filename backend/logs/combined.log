@@ -663,3 +663,248 @@
 2025-05-08 19:55:57 [INFO]: Found 5 workouts {
   "service": "gym-expert-api"
 }
+2025-05-08 21:58:07 [INFO]: Conexão com o banco de dados estabelecida com sucesso. {
+  "service": "gym-expert-api"
+}
+2025-05-08 21:58:07 [ERROR]: Erro ao inicializar dados de alimentos: Table 'gym_expert_system.food' doesn't exist {
+  "service": "gym-expert-api",
+  "name": "SequelizeDatabaseError",
+  "parent": {
+    "code": "ER_NO_SUCH_TABLE",
+    "errno": 1146,
+    "sqlState": "42S02",
+    "sqlMessage": "Table 'gym_expert_system.food' doesn't exist",
+    "sql": "SELECT count(*) AS `count` FROM `food` AS `food`;"
+  },
+  "original": {
+    "code": "ER_NO_SUCH_TABLE",
+    "errno": 1146,
+    "sqlState": "42S02",
+    "sqlMessage": "Table 'gym_expert_system.food' doesn't exist",
+    "sql": "SELECT count(*) AS `count` FROM `food` AS `food`;"
+  },
+  "sql": "SELECT count(*) AS `count` FROM `food` AS `food`;",
+  "parameters": {},
+  "stack": "Error\n    at Query.run (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\mysql\\query.js:52:25)\n    at C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async MySQLQueryInterface.rawSelect (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\query-interface.js:434:18)\n    at async food.aggregate (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\model.js:1277:19)\n    at async food.count (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\model.js:1306:20)\n    at async initFoodData (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\init-food-data.js:63:19)"
+}
+2025-05-08 22:01:40 [INFO]: Conexão com o banco de dados estabelecida com sucesso. {
+  "service": "gym-expert-api"
+}
+2025-05-08 22:01:40 [INFO]: 38 alimentos foram inseridos com sucesso. {
+  "service": "gym-expert-api"
+}
+2025-05-08 22:01:52 [INFO]: Database connection has been established successfully. {
+  "service": "gym-expert-api"
+}
+2025-05-08 22:01:52 [INFO]: Database synchronized successfully. {
+  "service": "gym-expert-api"
+}
+2025-05-08 22:01:52 [INFO]: Server is running on port 5000 {
+  "service": "gym-expert-api"
+}
+2025-05-08 22:08:37 [INFO]: Database connection has been established successfully. {
+  "service": "gym-expert-api"
+}
+2025-05-08 22:08:38 [INFO]: Database synchronized successfully. {
+  "service": "gym-expert-api"
+}
+2025-05-08 22:08:38 [INFO]: Server is running on port 5000 {
+  "service": "gym-expert-api"
+}
+2025-05-08 22:13:51 [INFO]: Conexão com o banco de dados estabelecida com sucesso. {
+  "service": "gym-expert-api"
+}
+2025-05-08 22:13:51 [INFO]: 38 alimentos foram inseridos com sucesso. {
+  "service": "gym-expert-api"
+}
+2025-05-08 22:14:38 [INFO]: Database connection has been established successfully. {
+  "service": "gym-expert-api"
+}
+2025-05-08 22:14:39 [INFO]: Database synchronized successfully. {
+  "service": "gym-expert-api"
+}
+2025-05-08 22:14:39 [INFO]: Server is running on port 5000 {
+  "service": "gym-expert-api"
+}
+2025-05-08 22:17:55 [INFO]: Tentativa de login {
+  "service": "gym-expert-api",
+  "email": "admin@example.com"
+}
+2025-05-08 22:17:55 [INFO]: Login realizado com sucesso {
+  "service": "gym-expert-api",
+  "userId": 1,
+  "email": "admin@example.com"
+}
+2025-05-08 22:19:23 [INFO]: Tentativa de registro de novo usuário {
+  "service": "gym-expert-api",
+  "email": "contateste@gmail.com"
+}
+2025-05-08 22:19:23 [INFO]: Usuário registrado com sucesso {
+  "service": "gym-expert-api",
+  "userId": 2,
+  "email": "contateste@gmail.com"
+}
+2025-05-08 22:19:26 [INFO]: Tentativa de login {
+  "service": "gym-expert-api",
+  "email": "contateste@gmail.com"
+}
+2025-05-08 22:19:26 [INFO]: Login realizado com sucesso {
+  "service": "gym-expert-api",
+  "userId": 2,
+  "email": "contateste@gmail.com"
+}
+2025-05-08 22:25:21 [INFO]: Database connection has been established successfully. {
+  "service": "gym-expert-api"
+}
+2025-05-08 22:25:22 [INFO]: Database synchronized successfully. {
+  "service": "gym-expert-api"
+}
+2025-05-08 22:25:22 [INFO]: Server is running on port 5000 {
+  "service": "gym-expert-api"
+}
+2025-05-27 14:36:07 [ERROR]: Unable to connect to the database: {
+  "service": "gym-expert-api",
+  "name": "SequelizeConnectionRefusedError",
+  "parent": {
+    "code": "ECONNREFUSED",
+    "fatal": true
+  },
+  "original": {
+    "code": "ECONNREFUSED",
+    "fatal": true
+  },
+  "stack": "SequelizeConnectionRefusedError\n    at ConnectionManager.connect (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\mysql\\connection-manager.js:92:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async ConnectionManager._connect (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:222:24)\n    at async C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:174:32\n    at async ConnectionManager.getConnection (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:197:7)\n    at async C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\sequelize.js:305:26\n    at async Sequelize.authenticate (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\sequelize.js:457:5)\n    at async startServer (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\server.js:61:5)"
+}
+2025-05-27 14:36:40 [ERROR]: Unable to connect to the database: {
+  "service": "gym-expert-api",
+  "name": "SequelizeConnectionRefusedError",
+  "parent": {
+    "code": "ECONNREFUSED",
+    "fatal": true
+  },
+  "original": {
+    "code": "ECONNREFUSED",
+    "fatal": true
+  },
+  "stack": "SequelizeConnectionRefusedError\n    at ConnectionManager.connect (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\mysql\\connection-manager.js:92:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async ConnectionManager._connect (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:222:24)\n    at async C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:174:32\n    at async ConnectionManager.getConnection (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:197:7)\n    at async C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\sequelize.js:305:26\n    at async Sequelize.authenticate (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\sequelize.js:457:5)\n    at async startServer (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\server.js:61:5)"
+}
+2025-05-27 14:37:44 [INFO]: Database connection has been established successfully. {
+  "service": "gym-expert-api"
+}
+2025-05-27 14:37:45 [INFO]: Database synchronized successfully. {
+  "service": "gym-expert-api"
+}
+2025-05-27 14:37:45 [INFO]: Server is running on port 5000 {
+  "service": "gym-expert-api"
+}
+2025-05-27 14:38:55 [INFO]: Tentativa de login {
+  "service": "gym-expert-api",
+  "email": "admin@example.com"
+}
+2025-05-27 14:38:55 [INFO]: Login realizado com sucesso {
+  "service": "gym-expert-api",
+  "userId": 1,
+  "email": "admin@example.com"
+}
+2025-05-27 14:38:58 [INFO]: Fetching all workouts, requested by user id: 1 {
+  "service": "gym-expert-api"
+}
+2025-05-27 14:38:58 [INFO]: Found 5 workouts {
+  "service": "gym-expert-api"
+}
+2025-05-27 14:38:58 [INFO]: Fetching all workouts, requested by user id: 1 {
+  "service": "gym-expert-api"
+}
+2025-05-27 14:38:58 [INFO]: Found 5 workouts {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:07:35 [INFO]: Database connection has been established successfully. {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:07:35 [INFO]: Database synchronized successfully. {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:07:35 [INFO]: Server is running on port 5000 {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:08:02 [INFO]: Database connection has been established successfully. {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:08:03 [INFO]: Database synchronized successfully. {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:08:03 [INFO]: Server is running on port 5000 {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:14:22 [INFO]: Iniciando migração da tabela de dietas... {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:14:22 [INFO]: Conexão com banco estabelecida com sucesso {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:17:10 [INFO]: 🚀 Iniciando Sistema de Migração de Dieta Inteligente... {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:17:10 [INFO]: ✅ Pré-requisitos verificados {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:17:10 [INFO]: Iniciando migração da tabela de dietas... {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:17:10 [INFO]: Conexão com banco estabelecida com sucesso {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:17:10 [INFO]: Coluna 'maintenance_calories' já existe - pulando migração 1/7 {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:17:10 [INFO]: Coluna 'caloric_adjustment' já existe - pulando migração 2/7 {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:17:10 [INFO]: Coluna 'strategy' já existe - pulando migração 3/7 {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:17:10 [INFO]: Coluna 'strategy_description' já existe - pulando migração 4/7 {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:17:10 [INFO]: Coluna 'weekly_weight_change' já existe - pulando migração 5/7 {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:17:10 [INFO]: Coluna 'bmi' já existe - pulando migração 6/7 {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:17:10 [INFO]: Coluna 'bmi_category' já existe - pulando migração 7/7 {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:17:12 [INFO]: ✅ Sincronização de modelos concluída {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:17:12 [INFO]: ✅ Estrutura da tabela atualizada! Novas colunas encontradas: 7 {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:17:12 [INFO]:    - maintenance_calories: int {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:17:12 [INFO]:    - caloric_adjustment: int {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:17:12 [INFO]:    - strategy: varchar(255) {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:17:12 [INFO]:    - strategy_description: text {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:17:12 [INFO]:    - weekly_weight_change: float {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:17:12 [INFO]:    - bmi: float {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:17:12 [INFO]:    - bmi_category: enum('underweight','normal','overweight','obese') {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:17:12 [INFO]: 🎉 Migração da tabela de dietas concluída com sucesso! {
+  "service": "gym-expert-api"
+}
+2025-05-27 16:17:12 [INFO]: 📊 Encontradas 2 dietas existentes {
+  "service": "gym-expert-api"
+}

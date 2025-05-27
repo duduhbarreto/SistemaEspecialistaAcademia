@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import { Container, Row, Col, Card, Button, Form, Spinner, Alert, Badge, Tabs, Tab, Modal, ListGroup } from 'react-bootstrap';
-import { FaUtensils, FaWeightHanging, FaAppleAlt, FaBreadSlice, FaFish, FaBan, FaPizzaSlice, FaChartPie, FaPlus, FaTrash, FaInfoCircle } from 'react-icons/fa';
+import { Container, Row, Col, Card, Button, Form, Spinner, Alert, Badge, Tabs, Tab, Modal, ListGroup, ProgressBar } from 'react-bootstrap';
+import { FaUtensils, FaWeightHanging, FaAppleAlt, FaBreadSlice, FaFish, FaBan, FaPizzaSlice, FaChartPie, FaPlus, FaTrash, FaInfoCircle, FaCalculator, FaArrowDown, FaArrowUp, FaMinus, FaBullseye, FaChartLine } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../context/AuthContext';
 import dietService from '../api/diet.service';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 
-// Registrar os elementos necessários do Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Diet = () => {
@@ -19,12 +18,14 @@ const Diet = () => {
   const [mealSuggestions, setMealSuggestions] = useState(null);
   const [restrictions, setRestrictions] = useState([]);
   const [activeTab, setActiveTab] = useState('overview');
+  const [insights, setInsights] = useState(null);
   const chartRef = useRef(null);
   
   // Modal states
   const [showDietModal, setShowDietModal] = useState(false);
   const [activityLevel, setActivityLevel] = useState('Moderadamente ativo');
   const [gender, setGender] = useState('Masculino');
+  const [dietApproach, setDietApproach] = useState('automatic');
   
   const [showRestrictionModal, setShowRestrictionModal] = useState(false);
   const [restrictionType, setRestrictionType] = useState('Alergia');
@@ -35,12 +36,10 @@ const Diet = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Tentar obter dieta existente
         const dietResponse = await dietService.getDiet();
         if (dietResponse.success) {
           setDiet(dietResponse.diet);
           
-          // Buscar sugestões de alimentos
           const suggestionsResponse = await dietService.getFoodSuggestions();
           if (suggestionsResponse.success) {
             setFoodSuggestions(suggestionsResponse.foodSuggestions);
@@ -48,7 +47,6 @@ const Diet = () => {
           }
         }
         
-        // Buscar restrições alimentares
         const restrictionsResponse = await dietService.getRestrictions();
         if (restrictionsResponse.success) {
           setRestrictions(restrictionsResponse.restrictions);
@@ -70,9 +68,9 @@ const Diet = () => {
     if (!diet) return { protein: 0, carbs: 0, fat: 0 };
     
     return {
-      protein: Math.round(diet.protein_g * 4), // 4 calorias por grama de proteína
-      carbs: Math.round(diet.carbs_g * 4),    // 4 calorias por grama de carboidrato
-      fat: Math.round(diet.fat_g * 9)         // 9 calorias por grama de gordura
+      protein: Math.round(diet.protein_g * 4),
+      carbs: Math.round(diet.carbs_g * 4),
+      fat: Math.round(diet.fat_g * 9)
     };
   };
   
@@ -117,17 +115,36 @@ const Diet = () => {
       }
     }
   };
-  
+
+  // Função para obter informações sobre a estratégia
+  const getStrategyInfo = (strategy) => {
+    const strategies = {
+      'Cutting Agressivo': { color: 'danger', icon: <FaArrowDown />, intensity: 'Alto' },
+      'Cutting Moderado': { color: 'warning', icon: <FaArrowDown />, intensity: 'Moderado' },
+      'Cutting Conservador': { color: 'info', icon: <FaArrowDown />, intensity: 'Baixo' },
+      'Lean Bulk': { color: 'success', icon: <FaArrowUp />, intensity: 'Baixo' },
+      'Lean Bulk Moderado': { color: 'success', icon: <FaArrowUp />, intensity: 'Moderado' },
+      'Lean Bulk Conservador': { color: 'primary', icon: <FaArrowUp />, intensity: 'Baixo' },
+      'Body Recomposition': { color: 'secondary', icon: <FaMinus />, intensity: 'Especial' },
+      'Mini Cut': { color: 'danger', icon: <FaArrowDown />, intensity: 'Alto' },
+      'Definição Suave': { color: 'info', icon: <FaArrowDown />, intensity: 'Baixo' },
+      'Manutenção Ativa': { color: 'secondary', icon: <FaMinus />, intensity: 'Mínimo' },
+      'Recuperação': { color: 'primary', icon: <FaArrowUp />, intensity: 'Mínimo' },
+      'Manutenção': { color: 'secondary', icon: <FaMinus />, intensity: 'Neutro' }
+    };
+    return strategies[strategy] || { color: 'secondary', icon: <FaMinus />, intensity: 'N/A' };
+  };
+
   // Calcular nova dieta
   const handleCalculateDiet = async () => {
     setCalculating(true);
     try {
-      const response = await dietService.calculateDiet(activityLevel, gender);
+      const response = await dietService.calculateDiet(activityLevel, gender, dietApproach);
       if (response.success) {
         setDiet(response.diet);
+        setInsights(response.insights);
         toast.success('Dieta calculada com sucesso!');
         
-        // Buscar sugestões atualizadas
         const suggestionsResponse = await dietService.getFoodSuggestions();
         if (suggestionsResponse.success) {
           setFoodSuggestions(suggestionsResponse.foodSuggestions);
@@ -164,7 +181,6 @@ const Diet = () => {
         setRestrictionDescription('');
         setShowRestrictionModal(false);
         
-        // Atualizar sugestões de alimentos
         const suggestionsResponse = await dietService.getFoodSuggestions();
         if (suggestionsResponse.success) {
           setFoodSuggestions(suggestionsResponse.foodSuggestions);
@@ -184,7 +200,6 @@ const Diet = () => {
         toast.success('Restrição removida com sucesso');
         setRestrictions(restrictions.filter(r => r.id !== id));
         
-        // Atualizar sugestões de alimentos
         const suggestionsResponse = await dietService.getFoodSuggestions();
         if (suggestionsResponse.success) {
           setFoodSuggestions(suggestionsResponse.foodSuggestions);
@@ -199,6 +214,131 @@ const Diet = () => {
   // Formatador para valores nutricionais
   const formatNutrient = (value) => {
     return value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "0";
+  };
+
+  // Renderizar informações estratégicas da dieta
+  const renderDietStrategy = () => {
+    if (!diet || !diet.strategy) return null;
+
+    const strategyInfo = getStrategyInfo(diet.strategy);
+    const weeklyChange = diet.weekly_weight_change || 0;
+    const changeText = weeklyChange > 0 ? 'ganho' : weeklyChange < 0 ? 'perda' : 'manutenção';
+    const changeColor = weeklyChange > 0 ? 'success' : weeklyChange < 0 ? 'danger' : 'secondary';
+
+    return (
+      <Card className="shadow-sm mb-4">
+        <Card.Header className={`bg-${strategyInfo.color} text-white`}>
+          <div className="d-flex justify-content-between align-items-center">
+            <h5 className="mb-0 d-flex align-items-center">
+              {strategyInfo.icon}
+              <span className="ms-2">Estratégia: {diet.strategy}</span>
+            </h5>
+            <Badge bg="light" text="dark">
+              Intensidade: {strategyInfo.intensity}
+            </Badge>
+          </div>
+        </Card.Header>
+        <Card.Body>
+          <Row>
+            <Col md={8}>
+              <p className="mb-3">{diet.strategy_description}</p>
+              
+              <div className="row">
+                <div className="col-md-6 mb-3">
+                  <h6 className="text-muted">Meta Semanal</h6>
+                  <div className="d-flex align-items-center">
+                    <Badge bg={changeColor} className="me-2 p-2">
+                      {Math.abs(weeklyChange).toFixed(1)} kg/{changeText}
+                    </Badge>
+                    <small className="text-muted">por semana</small>
+                  </div>
+                </div>
+                
+                <div className="col-md-6 mb-3">
+                  <h6 className="text-muted">Ajuste Calórico</h6>
+                  <div className="d-flex align-items-center">
+                    <Badge bg={diet.caloric_adjustment > 0 ? 'success' : diet.caloric_adjustment < 0 ? 'danger' : 'secondary'} className="me-2 p-2">
+                      {diet.caloric_adjustment > 0 ? '+' : ''}{diet.caloric_adjustment} kcal
+                    </Badge>
+                    <small className="text-muted">vs manutenção</small>
+                  </div>
+                </div>
+              </div>
+            </Col>
+            
+            <Col md={4}>
+              <div className="text-center">
+                <h6 className="text-muted mb-3">Calorias de Manutenção</h6>
+                <h4 className="mb-2">{formatNutrient(diet.maintenance_calories)} kcal</h4>
+                <div className="d-flex justify-content-center align-items-center">
+                  <FaCalculator className="text-primary me-2" />
+                  <small className="text-muted">TMB × Atividade</small>
+                </div>
+              </div>
+            </Col>
+          </Row>
+        </Card.Body>
+      </Card>
+    );
+  };
+
+  // Renderizar métricas de saúde
+  const renderHealthMetrics = () => {
+    if (!diet) return null;
+
+    const bmiStatus = {
+      'underweight': { label: 'Abaixo do peso', color: 'info' },
+      'normal': { label: 'Peso normal', color: 'success' },
+      'overweight': { label: 'Sobrepeso', color: 'warning' },
+      'obese': { label: 'Obesidade', color: 'danger' }
+    };
+
+    const bmiInfo = bmiStatus[diet.bmi_category] || { label: 'N/A', color: 'secondary' };
+    const proteinPerKg = insights ? insights.proteinPerKg : (diet.protein_g / currentUser.weight).toFixed(1);
+
+    return (
+      <Card className="shadow-sm mb-4">
+        <Card.Header className="bg-info text-white">
+          <h5 className="mb-0 d-flex align-items-center">
+            <FaChartLine className="me-2" />
+            Métricas de Saúde
+          </h5>
+        </Card.Header>
+        <Card.Body>
+          <Row>
+            <Col md={3}>
+              <div className="text-center">
+                <h6 className="text-muted">IMC</h6>
+                <h4>{diet.bmi}</h4>
+                <Badge bg={bmiInfo.color}>{bmiInfo.label}</Badge>
+              </div>
+            </Col>
+            <Col md={3}>
+              <div className="text-center">
+                <h6 className="text-muted">Proteína por kg</h6>
+                <h4>{proteinPerKg}g</h4>
+                <small className="text-muted">por kg corporal</small>
+              </div>
+            </Col>
+            <Col md={3}>
+              <div className="text-center">
+                <h6 className="text-muted">TMB</h6>
+                <h4>{insights ? formatNutrient(insights.bmr) : 'N/A'}</h4>
+                <small className="text-muted">kcal/dia</small>
+              </div>
+            </Col>
+            <Col md={3}>
+              <div className="text-center">
+                <h6 className="text-muted">Nível Atividade</h6>
+                <div className="small">
+                  <Badge bg="primary">{diet.activity_level}</Badge>
+                </div>
+              </div>
+            </Col>
+          </Row>
+        </Card.Body>
+      </Card>
+    );
   };
   
   // Renderizar cálculo de calorias por macronutriente
@@ -217,6 +357,12 @@ const Diet = () => {
               </div>
               <h3 className="mt-2">{formatNutrient(macroCalories.protein)} kcal</h3>
               <p className="text-muted">{formatNutrient(diet?.protein_g)} g</p>
+              <ProgressBar 
+                variant="danger" 
+                now={diet ? (macroCalories.protein / totalCals) * 100 : 0} 
+                className="mt-2"
+                style={{ height: '6px' }}
+              />
             </Card.Body>
           </Card>
         </Col>
@@ -229,6 +375,12 @@ const Diet = () => {
               </div>
               <h3 className="mt-2">{formatNutrient(macroCalories.carbs)} kcal</h3>
               <p className="text-muted">{formatNutrient(diet?.carbs_g)} g</p>
+              <ProgressBar 
+                variant="primary" 
+                now={diet ? (macroCalories.carbs / totalCals) * 100 : 0} 
+                className="mt-2"
+                style={{ height: '6px' }}
+              />
             </Card.Body>
           </Card>
         </Col>
@@ -241,6 +393,12 @@ const Diet = () => {
               </div>
               <h3 className="mt-2">{formatNutrient(macroCalories.fat)} kcal</h3>
               <p className="text-muted">{formatNutrient(diet?.fat_g)} g</p>
+              <ProgressBar 
+                variant="warning" 
+                now={diet ? (macroCalories.fat / totalCals) * 100 : 0} 
+                className="mt-2"
+                style={{ height: '6px' }}
+              />
             </Card.Body>
           </Card>
         </Col>
@@ -291,7 +449,7 @@ const Diet = () => {
     );
   };
   
-  // Renderizar sugestões de alimentos
+  // Renderizar sugestões de alimentos (simplificado)
   const renderFoodSuggestions = () => {
     if (!foodSuggestions) return null;
     
@@ -345,98 +503,19 @@ const Diet = () => {
     );
   };
   
-  // Renderizar sugestões de refeições
-  const renderMealSuggestions = () => {
-    if (!mealSuggestions) return null;
-    
-    return (
-      <div className="mb-4">
-        <h4 className="mb-3">Sugestões de Refeições Diárias</h4>
-        <p className="text-muted">Plano alimentar baseado na sua dieta calculada</p>
-        
-        <div className="accordion" id="mealAccordion">
-          {Object.keys(mealSuggestions).map((mealKey, index) => {
-            const meal = mealSuggestions[mealKey];
-            return (
-              <div className="accordion-item mb-3 shadow-sm" key={index}>
-                <h2 className="accordion-header" id={`heading${index}`}>
-                  <button 
-                    className="accordion-button collapsed" 
-                    type="button" 
-                    data-bs-toggle="collapse" 
-                    data-bs-target={`#collapse${index}`} 
-                    aria-expanded="false" 
-                    aria-controls={`collapse${index}`}
-                  >
-                    <span className="d-flex align-items-center">
-                      <FaUtensils className="me-2" />
-                      <strong>{meal.name}</strong>
-                    </span>
-                  </button>
-                </h2>
-                <div 
-                  id={`collapse${index}`} 
-                  className="accordion-collapse collapse" 
-                  aria-labelledby={`heading${index}`} 
-                  data-bs-parent="#mealAccordion"
-                >
-                  <div className="accordion-body">
-                    <Tabs defaultActiveKey="option1" id={`meal-tabs-${index}`}>
-                      {meal.options.map((option, optIndex) => (
-                        <Tab eventKey={`option${optIndex + 1}`} title={option.name} key={optIndex}>
-                          <div className="p-3">
-                            <h6>Alimentos Sugeridos:</h6>
-                            <ul className="mb-4">
-                              {option.foods.map((food, foodIndex) => (
-                                <li key={foodIndex}>{food}</li>
-                              ))}
-                            </ul>
-                            
-                            <h6>Macronutrientes:</h6>
-                            <div className="d-flex flex-wrap">
-                              <Badge bg="secondary" className="me-2 mb-2 p-2">
-                                Calorias: {option.macros.calories} kcal
-                              </Badge>
-                              <Badge bg="danger" className="me-2 mb-2 p-2">
-                                Proteínas: {option.macros.protein}g
-                              </Badge>
-                              <Badge bg="primary" className="me-2 mb-2 p-2">
-                                Carboidratos: {option.macros.carbs}g
-                              </Badge>
-                              <Badge bg="warning" className="me-2 mb-2 p-2">
-                                Gorduras: {option.macros.fat}g
-                              </Badge>
-                            </div>
-                          </div>
-                        </Tab>
-                      ))}
-                    </Tabs>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  };
-  
   // Componente para o gráfico de macronutrientes
   const MacroNutrientChart = () => {
     const chartContainer = useRef(null);
     const chartInstance = useRef(null);
     
     useEffect(() => {
-      // Destruir gráfico anterior se existir
       if (chartInstance.current) {
         chartInstance.current.destroy();
       }
       
-      // Garantir que o container existe e temos dados de dieta
       if (chartContainer.current && diet) {
         const ctx = chartContainer.current.getContext('2d');
         
-        // Criar novo gráfico
         chartInstance.current = new ChartJS(ctx, {
           type: 'doughnut',
           data: getChartData(),
@@ -444,13 +523,12 @@ const Diet = () => {
         });
       }
       
-      // Cleanup ao desmontar
       return () => {
         if (chartInstance.current) {
           chartInstance.current.destroy();
         }
       };
-    }, [diet]); // Recriar gráfico quando os dados da dieta mudarem
+    }, [diet]);
     
     return (
       <div style={{ height: '300px', position: 'relative' }}>
@@ -471,7 +549,7 @@ const Diet = () => {
   return (
     <Container className="py-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1>Plano Alimentar</h1>
+        <h1>Plano Alimentar Inteligente</h1>
         <div>
           <Button variant="outline-primary" className="me-2" onClick={() => setShowRestrictionModal(true)}>
             <FaBan className="me-2" />
@@ -479,7 +557,7 @@ const Diet = () => {
           </Button>
           <Button variant="primary" onClick={() => setShowDietModal(true)}>
             <FaUtensils className="me-2" />
-            Calcular Dieta
+            {diet ? 'Recalcular' : 'Calcular'} Dieta
           </Button>
         </div>
       </div>
@@ -491,56 +569,25 @@ const Diet = () => {
             <h3>Você ainda não tem uma dieta calculada</h3>
             <p className="text-muted mb-4">
               Calcule sua dieta personalizada com base no seu objetivo, peso, altura e nível de atividade.
+              Nossa calculadora usa estratégias avançadas de cutting e bulking baseadas na ciência nutricional.
             </p>
             <Button 
               variant="primary" 
               size="lg" 
               onClick={() => setShowDietModal(true)}
             >
+              <FaBullseye className="me-2" />
               Calcular Agora
             </Button>
           </Card.Body>
         </Card>
       ) : (
         <>
-          <Card className="shadow-sm mb-4">
-            <Card.Body>
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <h4 className="mb-0">Suas Informações</h4>
-                <Badge bg="primary" className="p-2">
-                  {currentUser.goal}
-                </Badge>
-              </div>
-              
-              <Row>
-                <Col md={4}>
-                  <div className="mb-3">
-                    <span className="text-muted d-block">Idade</span>
-                    <h5>{currentUser.age} anos</h5>
-                  </div>
-                </Col>
-                <Col md={4}>
-                  <div className="mb-3">
-                    <span className="text-muted d-block">Peso</span>
-                    <h5>{currentUser.weight} kg</h5>
-                  </div>
-                </Col>
-                <Col md={4}>
-                  <div className="mb-3">
-                    <span className="text-muted d-block">Altura</span>
-                    <h5>{currentUser.height} m</h5>
-                  </div>
-                </Col>
-              </Row>
-              
-              <div className="text-muted">
-                Nível de atividade: <strong>{diet.activity_level}</strong>
-                <span className="ms-3">
-                  Última atualização: <strong>{new Date(diet.last_updated).toLocaleDateString('pt-BR')}</strong>
-                </span>
-              </div>
-            </Card.Body>
-          </Card>
+          {/* Informações da Estratégia */}
+          {renderDietStrategy()}
+          
+          {/* Métricas de Saúde */}
+          {renderHealthMetrics()}
           
           <Card className="shadow-sm mb-4">
             <Card.Header className="bg-primary text-white">
@@ -554,25 +601,29 @@ const Diet = () => {
                 <Col md={8}>
                   <Card className="shadow-sm border-0 mb-4">
                     <Card.Body>
-                      <h4>Necessidade Calórica Diária</h4>
                       <div className="d-flex justify-content-between align-items-center">
-                        <h2 className="mb-0">{formatNutrient(diet.calories)} kcal</h2>
-                        <Button 
-                          variant="outline-primary" 
-                          size="sm"
-                          onClick={() => setShowDietModal(true)}
-                        >
-                          Recalcular
-                        </Button>
+                        <div>
+                          <h4>Meta Calórica Diária</h4>
+                          <h2 className="mb-0">{formatNutrient(diet.calories)} kcal</h2>
+                        </div>
+                        <div className="text-center">
+                          <Button 
+                            variant="outline-primary" 
+                            size="sm"
+                            onClick={() => setShowDietModal(true)}
+                          >
+                            <FaCalculator className="me-1" />
+                            Recalcular
+                          </Button>
+                        </div>
                       </div>
                     </Card.Body>
                   </Card>
                   
-                  {/* Detalhes dos Macronutrientes em Calorias */}
+                  {/* Detalhes dos Macronutrientes */}
                   {renderMacroCalories()}
                 </Col>
                 <Col md={4}>
-                  {/* Usando o componente otimizado para o gráfico */}
                   <MacroNutrientChart />
                 </Col>
               </Row>
@@ -585,79 +636,111 @@ const Diet = () => {
             className="mb-4"
           >
             <Tab eventKey="overview" title="Visão Geral">
-              {/* Restrições Alimentares */}
               {renderRestrictions()}
             </Tab>
             <Tab eventKey="suggestions" title="Sugestões de Alimentos">
-              {/* Sugestões de Alimentos */}
               {renderFoodSuggestions()}
-            </Tab>
-            <Tab eventKey="meals" title="Plano de Refeições">
-              {/* Plano de Refeições */}
-              {renderMealSuggestions()}
             </Tab>
           </Tabs>
         </>
       )}
       
       {/* Modal para Calcular Dieta */}
-      <Modal show={showDietModal} onHide={() => setShowDietModal(false)}>
+      <Modal show={showDietModal} onHide={() => setShowDietModal(false)} size="lg">
         <Modal.Header closeButton>
-          <Modal.Title>Calcular Dieta</Modal.Title>
+          <Modal.Title>
+            <FaBullseye className="me-2" />
+            Calculadora de Dieta Inteligente
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group className="mb-3">
-              <Form.Label>Nível de Atividade Física</Form.Label>
-              <Form.Select 
-                value={activityLevel}
-                onChange={(e) => setActivityLevel(e.target.value)}
-              >
-                <option value="Sedentário">Sedentário (pouco ou nenhum exercício)</option>
-                <option value="Levemente ativo">Levemente ativo (exercício leve 1-3 dias/semana)</option>
-                <option value="Moderadamente ativo">Moderadamente ativo (exercício moderado 3-5 dias/semana)</option>
-                <option value="Muito ativo">Muito ativo (exercício intenso 6-7 dias/semana)</option>
-                <option value="Extremamente ativo">Extremamente ativo (exercício muito intenso, trabalho físico)</option>
-              </Form.Select>
-            </Form.Group>
-            
-            <Form.Group className="mb-3">
-              <Form.Label>Gênero</Form.Label>
-              <div>
-                <Form.Check
-                  inline
-                  type="radio"
-                  label="Masculino"
-                  name="gender"
-                  id="gender-male"
-                  value="Masculino"
-                  checked={gender === 'Masculino'}
-                  onChange={e => setGender(e.target.value)}
-                />
-                <Form.Check
-                  inline
-                  type="radio"
-                  label="Feminino"
-                  name="gender"
-                  id="gender-female"
-                  value="Feminino"
-                  checked={gender === 'Feminino'}
-                  onChange={e => setGender(e.target.value)}
-                />
-              </div>
-            </Form.Group>
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Nível de Atividade Física</Form.Label>
+                  <Form.Select 
+                    value={activityLevel}
+                    onChange={(e) => setActivityLevel(e.target.value)}
+                  >
+                    <option value="Sedentário">Sedentário (pouco ou nenhum exercício)</option>
+                    <option value="Levemente ativo">Levemente ativo (exercício leve 1-3 dias/semana)</option>
+                    <option value="Moderadamente ativo">Moderadamente ativo (exercício moderado 3-5 dias/semana)</option>
+                    <option value="Muito ativo">Muito ativo (exercício intenso 6-7 dias/semana)</option>
+                    <option value="Extremamente ativo">Extremamente ativo (exercício muito intenso, trabalho físico)</option>
+                  </Form.Select>
+                </Form.Group>
+                
+                <Form.Group className="mb-3">
+                  <Form.Label>Gênero</Form.Label>
+                  <div>
+                    <Form.Check
+                      inline
+                      type="radio"
+                      label="Masculino"
+                      name="gender"
+                      value="Masculino"
+                      checked={gender === 'Masculino'}
+                      onChange={e => setGender(e.target.value)}
+                    />
+                    <Form.Check
+                      inline
+                      type="radio"
+                      label="Feminino"
+                      name="gender"
+                      value="Feminino"
+                      checked={gender === 'Feminino'}
+                      onChange={e => setGender(e.target.value)}
+                    />
+                  </div>
+                </Form.Group>
+              </Col>
+              
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Abordagem da Dieta</Form.Label>
+                  <Form.Select 
+                    value={dietApproach}
+                    onChange={(e) => setDietApproach(e.target.value)}
+                  >
+                    <option value="automatic">🤖 Automática (Recomendada)</option>
+                    <optgroup label="Cutting (Perda de Peso)">
+                      <option value="aggressive_cut">🔥 Cutting Agressivo (-600 kcal)</option>
+                      <option value="moderate_cut">⚖️ Cutting Moderado (-400 kcal)</option>
+                      <option value="conservative_cut">🎯 Cutting Conservador (-250 kcal)</option>
+                    </optgroup>
+                    <optgroup label="Manutenção/Recomposição">
+                      <option value="maintenance">➡️ Manutenção (0 kcal)</option>
+                    </optgroup>
+                    <optgroup label="Bulking (Ganho de Peso)">
+                      <option value="lean_bulk">💪 Lean Bulk (+250 kcal)</option>
+                      <option value="moderate_bulk">📈 Bulk Moderado (+400 kcal)</option>
+                      <option value="aggressive_bulk">🚀 Bulk Agressivo (+600 kcal)</option>
+                    </optgroup>
+                  </Form.Select>
+                  <Form.Text className="text-muted">
+                    A opção automática seleciona a melhor estratégia baseada no seu perfil.
+                  </Form.Text>
+                </Form.Group>
+              </Col>
+            </Row>
             
             <Alert variant="info">
               <div className="d-flex align-items-start">
                 <FaInfoCircle className="me-2 mt-1" />
                 <div>
-                  <p className="mb-1">O cálculo será baseado em:</p>
-                  <ul className="mb-0">
-                    <li>Seu peso atual: <strong>{currentUser.weight} kg</strong></li>
-                    <li>Sua altura: <strong>{currentUser.height} m</strong></li>
-                    <li>Sua idade: <strong>{currentUser.age} anos</strong></li>
-                    <li>Seu objetivo: <strong>{currentUser.goal}</strong></li>
+                  <p className="mb-1"><strong>O cálculo será baseado em:</strong></p>
+                  <ul className="mb-1">
+                    <li>Peso atual: <strong>{currentUser.weight} kg</strong></li>
+                    <li>Altura: <strong>{currentUser.height} m</strong></li>
+                    <li>Idade: <strong>{currentUser.age} anos</strong></li>
+                    <li>Objetivo: <strong>{currentUser.goal}</strong></li>
+                    <li>Experiência: <strong>{currentUser.experience_level}</strong></li>
                   </ul>
+                  <p className="mb-0 small">
+                    <strong>Nossa IA considera:</strong> IMC, composição corporal estimada, 
+                    experiência em treinos e metabolismo individual para criar uma estratégia personalizada.
+                  </p>
                 </div>
               </div>
             </Alert>
@@ -685,7 +768,10 @@ const Diet = () => {
                 Calculando...
               </>
             ) : (
-              'Calcular'
+              <>
+                <FaBullseye className="me-1" />
+                Calcular Dieta
+              </>
             )}
           </Button>
         </Modal.Footer>
@@ -724,26 +810,6 @@ const Diet = () => {
               </Form.Text>
             </Form.Group>
           </Form>
-          
-          {restrictions.length > 0 && (
-            <div className="mt-4">
-              <h6>Restrições Atuais:</h6>
-              <ListGroup variant="flush">
-                {restrictions.map((restriction, index) => (
-                  <ListGroup.Item key={index} className="px-0 py-2">
-                    <Badge bg={
-                      restriction.restriction_type === 'Alergia' ? 'danger' :
-                      restriction.restriction_type === 'Intolerância' ? 'warning' :
-                      restriction.restriction_type === 'Preferência' ? 'info' : 'secondary'
-                    } className="me-2">
-                      {restriction.restriction_type}
-                    </Badge>
-                    {restriction.description}
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
-            </div>
-          )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowRestrictionModal(false)}>
