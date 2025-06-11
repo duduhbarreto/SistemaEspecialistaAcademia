@@ -171,3 +171,39 @@
   },
   "stack": "SequelizeAccessDeniedError: Access denied for user 'root'@'localhost' (using password: NO)\n    at ConnectionManager.connect (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\mysql\\connection-manager.js:94:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async ConnectionManager._connect (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:222:24)\n    at async C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:174:32\n    at async ConnectionManager.getConnection (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:197:7)\n    at async C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\sequelize.js:305:26\n    at async Sequelize.authenticate (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\sequelize.js:457:5)\n    at async initExtendedDatabase (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\extend-database.js:16:5)"
 }
+2025-06-11 18:42:34 [ERROR]: 
+❌ Erro na expansão do banco de dados: Access denied for user 'root'@'localhost' (using password: NO) {
+  "service": "gym-expert-api",
+  "name": "SequelizeAccessDeniedError",
+  "parent": {
+    "code": "ER_ACCESS_DENIED_ERROR",
+    "errno": 1045,
+    "sqlState": "28000",
+    "sqlMessage": "Access denied for user 'root'@'localhost' (using password: NO)"
+  },
+  "original": {
+    "code": "ER_ACCESS_DENIED_ERROR",
+    "errno": 1045,
+    "sqlState": "28000",
+    "sqlMessage": "Access denied for user 'root'@'localhost' (using password: NO)"
+  },
+  "stack": "SequelizeAccessDeniedError: Access denied for user 'root'@'localhost' (using password: NO)\n    at ConnectionManager.connect (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\mysql\\connection-manager.js:94:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async ConnectionManager._connect (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:222:24)\n    at async C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:174:32\n    at async ConnectionManager.getConnection (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:197:7)\n    at async C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\sequelize.js:305:26\n    at async Sequelize.authenticate (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\sequelize.js:457:5)\n    at async initExtendedDatabase (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\extend-database.js:16:5)"
+}
+2025-06-11 18:43:06 [ERROR]: 
+❌ Erro na expansão do banco de dados: Access denied for user 'root'@'localhost' (using password: NO) {
+  "service": "gym-expert-api",
+  "name": "SequelizeAccessDeniedError",
+  "parent": {
+    "code": "ER_ACCESS_DENIED_ERROR",
+    "errno": 1045,
+    "sqlState": "28000",
+    "sqlMessage": "Access denied for user 'root'@'localhost' (using password: NO)"
+  },
+  "original": {
+    "code": "ER_ACCESS_DENIED_ERROR",
+    "errno": 1045,
+    "sqlState": "28000",
+    "sqlMessage": "Access denied for user 'root'@'localhost' (using password: NO)"
+  },
+  "stack": "SequelizeAccessDeniedError: Access denied for user 'root'@'localhost' (using password: NO)\n    at ConnectionManager.connect (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\mysql\\connection-manager.js:94:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async ConnectionManager._connect (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:222:24)\n    at async C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:174:32\n    at async ConnectionManager.getConnection (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:197:7)\n    at async C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\sequelize.js:305:26\n    at async Sequelize.authenticate (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\sequelize.js:457:5)\n    at async initExtendedDatabase (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\extend-database.js:16:5)"
+}
