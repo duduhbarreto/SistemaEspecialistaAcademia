@@ -24,4 +24,6 @@ router.put('/:id', controller.update);
 // Delete a workout
 router.delete('/:id', controller.delete);
 
+router.get('/genetic-recommendation', controller.getRecommendedGenetic);
+
 module.exports = router;
