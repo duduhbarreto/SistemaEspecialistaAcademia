@@ -1,0 +1,119 @@
+2025-05-08 19:18:45 [ERROR]: Erro ao inicializar dados de alimentos: Access denied for user 'root'@'localhost' (using password: NO) {
+  "service": "gym-expert-api",
+  "name": "SequelizeAccessDeniedError",
+  "parent": {
+    "code": "ER_ACCESS_DENIED_ERROR",
+    "errno": 1045,
+    "sqlState": "28000",
+    "sqlMessage": "Access denied for user 'root'@'localhost' (using password: NO)"
+  },
+  "original": {
+    "code": "ER_ACCESS_DENIED_ERROR",
+    "errno": 1045,
+    "sqlState": "28000",
+    "sqlMessage": "Access denied for user 'root'@'localhost' (using password: NO)"
+  },
+  "stack": "SequelizeAccessDeniedError: Access denied for user 'root'@'localhost' (using password: NO)\n    at ConnectionManager.connect (C:\\Users\\leona\\OneDrive\\Documentos\\PROJETOS\\gym-expert-system\\backend\\node_modules\\sequelize\\lib\\dialects\\mysql\\connection-manager.js:94:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async ConnectionManager._connect (C:\\Users\\leona\\OneDrive\\Documentos\\PROJETOS\\gym-expert-system\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:222:24)\n    at async C:\\Users\\leona\\OneDrive\\Documentos\\PROJETOS\\gym-expert-system\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:174:32\n    at async ConnectionManager.getConnection (C:\\Users\\leona\\OneDrive\\Documentos\\PROJETOS\\gym-expert-system\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:197:7)\n    at async C:\\Users\\leona\\OneDrive\\Documentos\\PROJETOS\\gym-expert-system\\backend\\node_modules\\sequelize\\lib\\sequelize.js:305:26\n    at async Sequelize.authenticate (C:\\Users\\leona\\OneDrive\\Documentos\\PROJETOS\\gym-expert-system\\backend\\node_modules\\sequelize\\lib\\sequelize.js:457:5)\n    at async initFoodData (C:\\Users\\leona\\OneDrive\\Documentos\\PROJETOS\\gym-expert-system\\backend\\init-food-data.js:58:5)"
+}
+2025-05-08 19:48:26 [ERROR]: Erro ao inicializar dados de alimentos: Access denied for user 'root'@'localhost' (using password: NO) {
+  "service": "gym-expert-api",
+  "name": "SequelizeAccessDeniedError",
+  "parent": {
+    "code": "ER_ACCESS_DENIED_ERROR",
+    "errno": 1045,
+    "sqlState": "28000",
+    "sqlMessage": "Access denied for user 'root'@'localhost' (using password: NO)"
+  },
+  "original": {
+    "code": "ER_ACCESS_DENIED_ERROR",
+    "errno": 1045,
+    "sqlState": "28000",
+    "sqlMessage": "Access denied for user 'root'@'localhost' (using password: NO)"
+  },
+  "stack": "SequelizeAccessDeniedError: Access denied for user 'root'@'localhost' (using password: NO)\n    at ConnectionManager.connect (C:\\Users\\leona\\OneDrive\\Documentos\\PROJETOS\\gym-expert-system\\backend\\node_modules\\sequelize\\lib\\dialects\\mysql\\connection-manager.js:94:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async ConnectionManager._connect (C:\\Users\\leona\\OneDrive\\Documentos\\PROJETOS\\gym-expert-system\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:222:24)\n    at async C:\\Users\\leona\\OneDrive\\Documentos\\PROJETOS\\gym-expert-system\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:174:32\n    at async ConnectionManager.getConnection (C:\\Users\\leona\\OneDrive\\Documentos\\PROJETOS\\gym-expert-system\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:197:7)\n    at async C:\\Users\\leona\\OneDrive\\Documentos\\PROJETOS\\gym-expert-system\\backend\\node_modules\\sequelize\\lib\\sequelize.js:305:26\n    at async Sequelize.authenticate (C:\\Users\\leona\\OneDrive\\Documentos\\PROJETOS\\gym-expert-system\\backend\\node_modules\\sequelize\\lib\\sequelize.js:457:5)\n    at async initFoodData (C:\\Users\\leona\\OneDrive\\Documentos\\PROJETOS\\gym-expert-system\\backend\\init-food-data.js:58:5)"
+}
+2025-05-08 19:52:32 [ERROR]: Erro ao inicializar dados de alimentos: Access denied for user 'root'@'localhost' (using password: NO) {
+  "service": "gym-expert-api",
+  "name": "SequelizeAccessDeniedError",
+  "parent": {
+    "code": "ER_ACCESS_DENIED_ERROR",
+    "errno": 1045,
+    "sqlState": "28000",
+    "sqlMessage": "Access denied for user 'root'@'localhost' (using password: NO)"
+  },
+  "original": {
+    "code": "ER_ACCESS_DENIED_ERROR",
+    "errno": 1045,
+    "sqlState": "28000",
+    "sqlMessage": "Access denied for user 'root'@'localhost' (using password: NO)"
+  },
+  "stack": "SequelizeAccessDeniedError: Access denied for user 'root'@'localhost' (using password: NO)\n    at ConnectionManager.connect (C:\\Users\\leona\\OneDrive\\Documentos\\PROJETOS\\gym-expert-system\\backend\\node_modules\\sequelize\\lib\\dialects\\mysql\\connection-manager.js:94:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async ConnectionManager._connect (C:\\Users\\leona\\OneDrive\\Documentos\\PROJETOS\\gym-expert-system\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:222:24)\n    at async C:\\Users\\leona\\OneDrive\\Documentos\\PROJETOS\\gym-expert-system\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:174:32\n    at async ConnectionManager.getConnection (C:\\Users\\leona\\OneDrive\\Documentos\\PROJETOS\\gym-expert-system\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:197:7)\n    at async C:\\Users\\leona\\OneDrive\\Documentos\\PROJETOS\\gym-expert-system\\backend\\node_modules\\sequelize\\lib\\sequelize.js:305:26\n    at async Sequelize.authenticate (C:\\Users\\leona\\OneDrive\\Documentos\\PROJETOS\\gym-expert-system\\backend\\node_modules\\sequelize\\lib\\sequelize.js:457:5)\n    at async initFoodData (C:\\Users\\leona\\OneDrive\\Documentos\\PROJETOS\\gym-expert-system\\backend\\init-food-data.js:58:5)"
+}
+2025-05-08 21:58:07 [ERROR]: Erro ao inicializar dados de alimentos: Table 'gym_expert_system.food' doesn't exist {
+  "service": "gym-expert-api",
+  "name": "SequelizeDatabaseError",
+  "parent": {
+    "code": "ER_NO_SUCH_TABLE",
+    "errno": 1146,
+    "sqlState": "42S02",
+    "sqlMessage": "Table 'gym_expert_system.food' doesn't exist",
+    "sql": "SELECT count(*) AS `count` FROM `food` AS `food`;"
+  },
+  "original": {
+    "code": "ER_NO_SUCH_TABLE",
+    "errno": 1146,
+    "sqlState": "42S02",
+    "sqlMessage": "Table 'gym_expert_system.food' doesn't exist",
+    "sql": "SELECT count(*) AS `count` FROM `food` AS `food`;"
+  },
+  "sql": "SELECT count(*) AS `count` FROM `food` AS `food`;",
+  "parameters": {},
+  "stack": "Error\n    at Query.run (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\mysql\\query.js:52:25)\n    at C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async MySQLQueryInterface.rawSelect (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\query-interface.js:434:18)\n    at async food.aggregate (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\model.js:1277:19)\n    at async food.count (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\model.js:1306:20)\n    at async initFoodData (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\init-food-data.js:63:19)"
+}
+2025-05-27 14:36:07 [ERROR]: Unable to connect to the database: {
+  "service": "gym-expert-api",
+  "name": "SequelizeConnectionRefusedError",
+  "parent": {
+    "code": "ECONNREFUSED",
+    "fatal": true
+  },
+  "original": {
+    "code": "ECONNREFUSED",
+    "fatal": true
+  },
+  "stack": "SequelizeConnectionRefusedError\n    at ConnectionManager.connect (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\mysql\\connection-manager.js:92:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async ConnectionManager._connect (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:222:24)\n    at async C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:174:32\n    at async ConnectionManager.getConnection (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:197:7)\n    at async C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\sequelize.js:305:26\n    at async Sequelize.authenticate (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\sequelize.js:457:5)\n    at async startServer (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\server.js:61:5)"
+}
+2025-05-27 14:36:40 [ERROR]: Unable to connect to the database: {
+  "service": "gym-expert-api",
+  "name": "SequelizeConnectionRefusedError",
+  "parent": {
+    "code": "ECONNREFUSED",
+    "fatal": true
+  },
+  "original": {
+    "code": "ECONNREFUSED",
+    "fatal": true
+  },
+  "stack": "SequelizeConnectionRefusedError\n    at ConnectionManager.connect (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\mysql\\connection-manager.js:92:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async ConnectionManager._connect (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:222:24)\n    at async C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:174:32\n    at async ConnectionManager.getConnection (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\abstract\\connection-manager.js:197:7)\n    at async C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\sequelize.js:305:26\n    at async Sequelize.authenticate (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\sequelize.js:457:5)\n    at async startServer (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\server.js:61:5)"
+}
+2025-05-27 16:14:22 [ERROR]: ❌ Erro durante a migração: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'IF NOT EXISTS maintenance_calories INT DEFAULT NULL COMMENT 'Calorias de manuten' at line 1 {
+  "service": "gym-expert-api",
+  "name": "SequelizeDatabaseError",
+  "parent": {
+    "code": "ER_PARSE_ERROR",
+    "errno": 1064,
+    "sqlState": "42000",
+    "sqlMessage": "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'IF NOT EXISTS maintenance_calories INT DEFAULT NULL COMMENT 'Calorias de manuten' at line 1",
+    "sql": "ALTER TABLE diets ADD COLUMN IF NOT EXISTS maintenance_calories INT DEFAULT NULL COMMENT 'Calorias de manutenção calculadas';"
+  },
+  "original": {
+    "code": "ER_PARSE_ERROR",
+    "errno": 1064,
+    "sqlState": "42000",
+    "sqlMessage": "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'IF NOT EXISTS maintenance_calories INT DEFAULT NULL COMMENT 'Calorias de manuten' at line 1",
+    "sql": "ALTER TABLE diets ADD COLUMN IF NOT EXISTS maintenance_calories INT DEFAULT NULL COMMENT 'Calorias de manutenção calculadas';"
+  },
+  "sql": "ALTER TABLE diets ADD COLUMN IF NOT EXISTS maintenance_calories INT DEFAULT NULL COMMENT 'Calorias de manutenção calculadas';",
+  "parameters": {},
+  "stack": "Error\n    at Query.run (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\dialects\\mysql\\query.js:52:25)\n    at C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\node_modules\\sequelize\\lib\\sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async migrateDietTable (C:\\Users\\USUÁRIO\\OneDrive\\Documents\\SistemaEspecialistaAcademia\\backend\\migrate-diet-table.js:34:9)"
+}
