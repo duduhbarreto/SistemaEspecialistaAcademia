@@ -381,4 +381,5 @@ const WorkoutList = () => {
   );
 };
 
+
 export default WorkoutList;

@@ -1083,3 +1083,139 @@
 2025-06-11 18:48:47 [INFO]: Server is running on port 5000 {
   "service": "gym-expert-api"
 }
+2025-06-15 20:45:08 [INFO]: Iniciando expansão do banco de dados... {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:45:08 [INFO]: Conexão estabelecida com sucesso! {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:45:08 [ERROR]: Nenhum grupo muscular encontrado. Execute setup-db.js primeiro. {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:45:33 [INFO]: Conexão com o banco de dados estabelecida com sucesso. {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:45:33 [INFO]: 38 alimentos foram inseridos com sucesso. {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:45:43 [INFO]: Iniciando expansão do banco de dados... {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:45:43 [INFO]: Conexão estabelecida com sucesso! {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:45:43 [INFO]: Adicionando novos exercícios... {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:45:43 [INFO]: ✅ 57 novos exercícios adicionados com sucesso! {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:45:43 [INFO]: Adicionando novos treinos... {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:45:43 [INFO]: ✅ 15 novos treinos adicionados com sucesso! {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:45:43 [INFO]: Criando associações entre treinos e exercícios... {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:45:43 [INFO]: ✅ 52 associações entre treinos e exercícios criadas com sucesso! {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:45:43 [INFO]: 
+✅ Expansão do banco de dados concluída com sucesso! {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:45:43 [INFO]: ✓ 57 novos exercícios adicionados {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:45:43 [INFO]: ✓ 15 novos treinos adicionados {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:45:43 [INFO]: ✓ 52 associações entre treinos e exercícios criadas {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:01 [INFO]: 🚀 Iniciando Sistema de Migração de Dieta Inteligente... {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:01 [INFO]: ✅ Pré-requisitos verificados {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:01 [INFO]: Iniciando migração da tabela de dietas... {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:01 [INFO]: Conexão com banco estabelecida com sucesso {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:01 [INFO]: Coluna 'maintenance_calories' já existe - pulando migração 1/7 {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:01 [INFO]: Coluna 'caloric_adjustment' já existe - pulando migração 2/7 {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:01 [INFO]: Coluna 'strategy' já existe - pulando migração 3/7 {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:01 [INFO]: Coluna 'strategy_description' já existe - pulando migração 4/7 {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:01 [INFO]: Coluna 'weekly_weight_change' já existe - pulando migração 5/7 {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:01 [INFO]: Coluna 'bmi' já existe - pulando migração 6/7 {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:01 [INFO]: Coluna 'bmi_category' já existe - pulando migração 7/7 {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:01 [INFO]: ✅ Sincronização de modelos concluída {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:01 [INFO]: ✅ Estrutura da tabela atualizada! Novas colunas encontradas: 7 {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:01 [INFO]:    - maintenance_calories: int {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:01 [INFO]:    - caloric_adjustment: int {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:01 [INFO]:    - strategy: varchar(255) {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:01 [INFO]:    - strategy_description: text {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:01 [INFO]:    - weekly_weight_change: float {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:01 [INFO]:    - bmi: float {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:01 [INFO]:    - bmi_category: enum('underweight','normal','overweight','obese') {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:01 [INFO]: 🎉 Migração da tabela de dietas concluída com sucesso! {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:01 [INFO]: 📊 Encontradas 0 dietas existentes {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:15 [INFO]: Database connection has been established successfully. {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:16 [INFO]: Database synchronized successfully. {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:46:16 [INFO]: Server is running on port 5000 {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:52:18 [INFO]: Database connection has been established successfully. {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:52:18 [INFO]: Database synchronized successfully. {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:52:18 [INFO]: Server is running on port 5000 {
+  "service": "gym-expert-api"
+}

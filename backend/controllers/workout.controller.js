@@ -950,6 +950,7 @@ async function createWorkout(chromosome, user, allExercises, split) {
   // Salvar associações entre treino e exercícios
   await WorkoutExercise.bulkCreate(workoutExercises);
   
+  
   // Buscar o treino completo com todos os exercícios
   const completeWorkout = await Workout.findByPk(workout.id, {
     include: [{
