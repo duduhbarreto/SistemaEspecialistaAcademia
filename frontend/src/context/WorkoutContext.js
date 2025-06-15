@@ -10,8 +10,10 @@ export const WorkoutProvider = ({ children }) => {
   const { currentUser } = useContext(AuthContext);
   const [workouts, setWorkouts] = useState([]);
   const [recommendedWorkout, setRecommendedWorkout] = useState(null);
+  const [geneticWorkout, setGeneticWorkout] = useState(null);
   const [workoutHistory, setWorkoutHistory] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [geneticLoading, setGeneticLoading] = useState(false);
   const [initialized, setInitialized] = useState(false);
 
   // Use useCallback para evitar recriações de funções
@@ -47,6 +49,30 @@ export const WorkoutProvider = ({ children }) => {
     } catch (error) {
       console.error('Error fetching recommended workout:', error);
       // Não mostrar toast para não irritar o usuário
+    }
+  }, []);
+
+  // NOVO: Função para buscar treino com algoritmo genético
+  const fetchGeneticWorkout = useCallback(async () => {
+    console.log("Fetching genetic workout...");
+    try {
+      setGeneticLoading(true);
+      const response = await workoutService.getGeneticRecommendation();
+      if (response && response.success) {
+        setGeneticWorkout(response.workout);
+        toast.success('Treino genético gerado com sucesso!');
+        return response;
+      } else {
+        console.error("Failed to fetch genetic workout:", response);
+        toast.error(response.message || 'Erro ao gerar treino genético');
+        return response;
+      }
+    } catch (error) {
+      console.error('Error fetching genetic workout:', error);
+      toast.error('Erro ao comunicar com o servidor');
+      return { success: false, message: 'Erro ao comunicar com o servidor' };
+    } finally {
+      setGeneticLoading(false);
     }
   }, []);
 
@@ -128,10 +154,13 @@ export const WorkoutProvider = ({ children }) => {
   const contextValue = {
     workouts,
     recommendedWorkout,
+    geneticWorkout,
     workoutHistory,
     loading,
+    geneticLoading,
     fetchWorkouts,
     fetchRecommendedWorkout,
+    fetchGeneticWorkout,
     fetchWorkoutHistory,
     getWorkout,
     recordWorkout
@@ -140,8 +169,10 @@ export const WorkoutProvider = ({ children }) => {
   console.log("WorkoutContext state:", {
     workoutsCount: workouts.length,
     hasRecommendedWorkout: !!recommendedWorkout,
+    hasGeneticWorkout: !!geneticWorkout,
     historyCount: workoutHistory.length,
     loading,
+    geneticLoading,
     initialized
   });
 

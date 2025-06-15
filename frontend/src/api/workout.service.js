@@ -55,6 +55,23 @@ class WorkoutService {
     }
   }
 
+  // NOVO: Método para algoritmo genético
+  async getGeneticRecommendation() {
+    try {
+      console.log('Getting genetic workout recommendation');
+      const response = await axios.get(API_URL + 'genetic-recommendation', { headers: authHeader() });
+      console.log('Genetic workout response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error in getGeneticRecommendation():', error);
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Erro ao gerar treino com algoritmo genético',
+        error: error.message
+      };
+    }
+  }
+
   async create(workoutData) {
     try {
       const response = await axios.post(API_URL, workoutData, { headers: authHeader() });
