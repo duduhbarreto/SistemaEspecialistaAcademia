@@ -180,6 +180,106 @@ exports.getRecommended = async (req, res) => {
   }
 };
 
+// Definição de divisões de treino
+function getTrainingSplits() {
+  return [
+    {
+      name: "Peito e Tríceps",
+      primaryGroups: [1], // ID do grupo muscular Peito
+      secondaryGroups: [5], // ID do grupo muscular Tríceps
+      auxiliaryGroups: [3, 7] // Ombros e Abdômen como grupos auxiliares
+    },
+    {
+      name: "Costas e Bíceps",
+      primaryGroups: [2], // ID do grupo muscular Costas
+      secondaryGroups: [4], // ID do grupo muscular Bíceps
+      auxiliaryGroups: [10, 7] // Antebraço e Abdômen como grupos auxiliares
+    },
+    {
+      name: "Pernas e Glúteos",
+      primaryGroups: [6], // ID do grupo muscular Pernas
+      secondaryGroups: [8], // ID do grupo muscular Glúteos
+      auxiliaryGroups: [9, 7] // Panturrilha e Abdômen como grupos auxiliares
+    },
+    {
+      name: "Ombros e Core",
+      primaryGroups: [3], // ID do grupo muscular Ombros
+      secondaryGroups: [7], // ID do grupo muscular Abdômen
+      auxiliaryGroups: [4, 5] // Bíceps e Tríceps como grupos auxiliares
+    }
+  ];
+}
+
+// Função para determinar qual divisão recomendar com base no histórico
+async function getRecommendedSplit(userId) {
+  try {
+    // Buscar histórico de treinos do usuário
+    const recentHistory = await db.history.findAll({
+      where: { user_id: userId },
+      order: [['workout_date', 'DESC']],
+      limit: 10,
+      include: [{
+        model: db.workout,
+        include: [{
+          model: db.exercise,
+          include: [db.muscleGroup]
+        }]
+      }]
+    });
+    
+    if (recentHistory.length === 0) {
+      // Se não houver histórico, retornar a primeira divisão
+      return 0; // Índice da primeira divisão
+    }
+    
+    // Mapear os grupos musculares treinados recentemente
+    const recentlyTrainedGroups = new Set();
+    recentHistory.forEach(history => {
+      if (history.workout && history.workout.exercises) {
+        history.workout.exercises.forEach(exercise => {
+          if (exercise.muscle_group_id) {
+            recentlyTrainedGroups.add(exercise.muscle_group_id);
+          }
+        });
+      }
+    });
+    
+    // Obter as divisões de treino
+    const splits = getTrainingSplits();
+    
+    // Calcular pontuação para cada divisão com base em quão recentemente seus grupos foram treinados
+    const splitScores = splits.map((split, index) => {
+      let score = 0;
+      // Contar quantos grupos principais desta divisão foram treinados recentemente
+      split.primaryGroups.forEach(groupId => {
+        if (recentlyTrainedGroups.has(groupId)) {
+          score -= 10; // Penalizar divisões com grupos principais treinados recentemente
+        } else {
+          score += 5; // Bonificar divisões com grupos principais não treinados recentemente
+        }
+      });
+      
+      split.secondaryGroups.forEach(groupId => {
+        if (recentlyTrainedGroups.has(groupId)) {
+          score -= 5; // Penalizar menos para grupos secundários
+        } else {
+          score += 3;
+        }
+      });
+      
+      return { index, score };
+    });
+    
+    // Ordenar por pontuação e retornar o índice da divisão com maior pontuação
+    splitScores.sort((a, b) => b.score - a.score);
+    return splitScores[0].index;
+    
+  } catch (error) {
+    logger.error('Erro ao determinar próxima divisão de treino:', error);
+    return 0; // Em caso de erro, retornar a primeira divisão
+  }
+}
+
 // Obter um treino recomendado usando algoritmo genético
 exports.getRecommendedGenetic = async (req, res) => {
   try {
@@ -212,13 +312,21 @@ exports.getRecommendedGenetic = async (req, res) => {
       }]
     });
     
+    // Determinar qual divisão de treino recomendar
+    const splitIndex = await getRecommendedSplit(userId);
+    const split = getTrainingSplits()[splitIndex];
+    
     // Executar algoritmo genético
-    const geneticWorkout = await geneticAlgorithm(user, allExercises, existingWorkouts);
+    const geneticWorkout = await geneticAlgorithm(user, allExercises, existingWorkouts, splitIndex);
     
     return res.status(200).json({
       success: true,
       message: 'Treino gerado com algoritmo genético',
-      workout: geneticWorkout
+      workout: geneticWorkout,
+      split_info: {
+        name: split.name,
+        description: `Este treino foca em ${split.name} como parte do seu plano de treino dividido.`
+      }
     });
     
   } catch (error) {
@@ -352,34 +460,38 @@ exports.delete = async (req, res) => {
 };
 
 //algoritmo genetico
-// Função principal
-async function geneticAlgorithm(user, allExercises, existingWorkouts) {
+// Função principal - versão modificada para divisão de treino
+async function geneticAlgorithm(user, allExercises, existingWorkouts, splitIndex) {
   // Parâmetros
   const POPULATION_SIZE = 20; //Quantidade de treinos diferentes em cada geração (20 treinos)
   const MAX_GENERATIONS = 15; // numero de ciclos evolutivos
   const MUTATION_RATE = 0.2; //mutação de 20% chance de alterar um exercício
   const CROSSOVER_RATE = 0.7; // Probabilidade de ocorrer combinação entre dois treinos (70%)
   
+  // Obter informações da divisão selecionada
+  const split = getTrainingSplits()[splitIndex];
+  
   // Definir número de exercícios baseado na experiência
   const exerciseCount = user.experience_level === 'Iniciante' ? 6 : //Iniciante: 6 exercícios
-                        user.experience_level === 'Intermediário' ? 8 : 10; //Intermediário: 8 exercícios
+                        user.experience_level === 'Intermediário' ? 8 : 10; //Intermediário: 8 exercícios, Avançado: 10
   
-  logger.info(`Iniciando algoritmo genético - população: ${POPULATION_SIZE}, gerações: ${MAX_GENERATIONS}`);
+  logger.info(`Iniciando algoritmo genético - população: ${POPULATION_SIZE}, gerações: ${MAX_GENERATIONS}, divisão: ${split.name}`);
   
-  // Inicializar população passando todos paramentros necessarios para criar treinos relevantes para o usuario
+  // Inicializar população passando todos parâmetros necessários incluindo a divisão de treino
   let population = initializePopulation(
     POPULATION_SIZE, //tamanho da população
     exerciseCount,  //numeros de exerc por treino
     allExercises,  //lista dos exerc
     existingWorkouts, //treinos existentes para utilizar como base
-    user
+    user,
+    splitIndex  // Novo parâmetro: índice da divisão de treino
   );
   
   // Evoluir por várias gerações
   for (let gen = 0; gen < MAX_GENERATIONS; gen++) { //loop iniciado para executar o processo evolutivo para cada geração
-    // Calcular fitness para cada indivíduo
+    // Calcular fitness para cada indivíduo, agora considerando a divisão de treino
     const fitnessScores = population.map(individual => 
-      calculateFitness(individual, user, allExercises)
+      calculateFitness(individual, user, allExercises, splitIndex)
     );
     
     // Elitismo - manter o melhor indivíduo
@@ -402,9 +514,9 @@ async function geneticAlgorithm(user, allExercises, existingWorkouts) {
         offspring = Math.random() < 0.5 ? [...parent1] : [...parent2];  // Se não houver crossover, escolher um dos pais aleatoriamente
       }
       
-      // Mutação
+      // Mutação, agora considerando a divisão de treino
       if (Math.random() < MUTATION_RATE) {
-        mutate(offspring, allExercises); //altera aleatoriamente alguns exercicios com 20% de chance de mutação
+        mutate(offspring, allExercises, splitIndex);
       }
       
       // Adicionar à nova população
@@ -419,20 +531,26 @@ async function geneticAlgorithm(user, allExercises, existingWorkouts) {
   
   // Encontrar o melhor indivíduo da população final
   const finalFitness = population.map(individual =>  //Avalia cada treino (indivíduo) da população
-    calculateFitness(individual, user, allExercises) //Cria um array com a pontuação de cada treino (avaliando fitness final)
+    calculateFitness(individual, user, allExercises, splitIndex) //Cria um array com a pontuação de cada treino (avaliando fitness final)
   );
 
   //elitismo  (Identifico índice do treino com maior fitness)
   const bestFinalIndex = finalFitness.indexOf(Math.max(...finalFitness)); //encontrar maior valor de fitness
   const bestSolution = population[bestFinalIndex]; //melhor solução
   
-  // Criar treino a partir do melhor indivíduo
-  return createWorkout(bestSolution, user, allExercises);
+  // Criar treino a partir do melhor indivíduo, incluindo informações da divisão
+  return createWorkout(bestSolution, user, allExercises, split);
 }
 
-// Inicializar população
-function initializePopulation(size, numExercises, allExercises, existingWorkouts, user) {
-  const population = []; //array com todos os treinos da popu
+// Inicializar população - Versão modificada para divisão de treino
+function initializePopulation(size, numExercises, allExercises, existingWorkouts, user, splitIndex) {
+  const population = []; //array com todos os treinos da população
+  const split = getTrainingSplits()[splitIndex];
+  
+  // Filtrar exercícios relevantes para esta divisão
+  const primaryExercises = allExercises.filter(ex => split.primaryGroups.includes(ex.muscle_group_id));
+  const secondaryExercises = allExercises.filter(ex => split.secondaryGroups.includes(ex.muscle_group_id));
+  const auxiliaryExercises = allExercises.filter(ex => split.auxiliaryGroups.includes(ex.muscle_group_id));
   
   // Usar treinos existentes relevantes como parte da população inicial
   const relevantWorkouts = existingWorkouts.filter(workout => 
@@ -442,21 +560,28 @@ function initializePopulation(size, numExercises, allExercises, existingWorkouts
   // Extrair cromossomos dos treinos existentes
   for (const workout of relevantWorkouts) {
     if (population.length < size / 2) {
-      const chromosome = workout.exercises.map(ex => ex.id); //extraindo os ids dos exerc
+      const chromosome = [];
       
-      // Ajustar o tamanho(cromossomo) se necessário
-      while (chromosome.length > numExercises) {
-        chromosome.splice(Math.floor(Math.random() * chromosome.length), 1); // Se tem mais exercícios que o necessário, remover aleatoriamente
-      }
+      // Verificar quais exercícios do treino existente pertencem à divisão atual
+      const relevantExercises = workout.exercises.filter(ex => 
+        split.primaryGroups.includes(ex.muscle_group_id) || 
+        split.secondaryGroups.includes(ex.muscle_group_id) || 
+        split.auxiliaryGroups.includes(ex.muscle_group_id)
+      );
       
-      while (chromosome.length < numExercises) {  // Se tem menos exercícios, adicionar aleatoriamente (sem duplicatas)
-        const randomExercise = allExercises[Math.floor(Math.random() * allExercises.length)];
-        if (!chromosome.includes(randomExercise.id)) {
-          chromosome.push(randomExercise.id);
+      // Adicionar IDs dos exercícios relevantes
+      relevantExercises.forEach(ex => {
+        if (!chromosome.includes(ex.id) && chromosome.length < numExercises) {
+          chromosome.push(ex.id);
         }
-      }
+      });
       
-      population.push(chromosome); // Adicionar cromossomo ajustado à população
+      // Completar com exercícios faltantes seguindo a proporção de grupos
+      completeChromosome(chromosome, numExercises, primaryExercises, secondaryExercises, auxiliaryExercises);
+      
+      if (chromosome.length === numExercises) {
+        population.push(chromosome);
+      }
     }
   }
   
@@ -464,41 +589,108 @@ function initializePopulation(size, numExercises, allExercises, existingWorkouts
   while (population.length < size) {
     const chromosome = []; //novo treino vazio
     
-    // Garantir diversidade de grupos musculares
-    const muscleGroups = new Set();
+    // Completar com a proporção correta de grupos musculares
+    completeChromosome(chromosome, numExercises, primaryExercises, secondaryExercises, auxiliaryExercises);
     
-    while (chromosome.length < numExercises) {  //selecionar exec aleatorios
-      const randomIndex = Math.floor(Math.random() * allExercises.length);
-      const exercise = allExercises[randomIndex];
-      
-      // Evitar duplicatas
-      if (!chromosome.includes(exercise.id)) {
-        // Favorecer diversidade de grupos musculares
-        if (muscleGroups.size < 5 || Math.random() < 0.5) {
-          chromosome.push(exercise.id);
-          muscleGroups.add(exercise.muscle_group_id);
-        }
-      }
+    if (chromosome.length === numExercises) {
+      population.push(chromosome);
     }
-    
-    population.push(chromosome);
   }
   
   return population;
 }
 
-// Função de fitness
-function calculateFitness(chromosome, user, allExercises) {
-  let fitness = 0; //população inicial 0
+// Função auxiliar para completar um cromossomo com a proporção correta de exercícios
+function completeChromosome(chromosome, numExercises, primaryExercises, secondaryExercises, auxiliaryExercises) {
+  // Garantir que pelo menos 60% dos exercícios sejam dos grupos principais
+  const primaryCount = Math.ceil(numExercises * 0.6);
+  const secondaryCount = Math.ceil(numExercises * 0.3);
+  const auxiliaryCount = numExercises - primaryCount - secondaryCount;
+  
+  // Adicionar exercícios dos grupos principais
+  while (chromosome.filter(id => primaryExercises.some(ex => ex.id === id)).length < primaryCount && primaryExercises.length > 0) {
+    const randomIndex = Math.floor(Math.random() * primaryExercises.length);
+    const exercise = primaryExercises[randomIndex];
+    if (!chromosome.includes(exercise.id)) {
+      chromosome.push(exercise.id);
+    }
+  }
+  
+  // Adicionar exercícios dos grupos secundários
+  while (chromosome.filter(id => secondaryExercises.some(ex => ex.id === id)).length < secondaryCount && secondaryExercises.length > 0) {
+    const randomIndex = Math.floor(Math.random() * secondaryExercises.length);
+    const exercise = secondaryExercises[randomIndex];
+    if (!chromosome.includes(exercise.id)) {
+      chromosome.push(exercise.id);
+    }
+  }
+  
+  // Preencher o restante com exercícios auxiliares
+  while (chromosome.length < numExercises && auxiliaryExercises.length > 0) {
+    const randomIndex = Math.floor(Math.random() * auxiliaryExercises.length);
+    const exercise = auxiliaryExercises[randomIndex];
+    if (!chromosome.includes(exercise.id)) {
+      chromosome.push(exercise.id);
+    } 
+  }
+  
+  // Se ainda faltam exercícios, preencher com qualquer um disponível
+  while (chromosome.length < numExercises) {
+    const allAvailableExercises = [...primaryExercises, ...secondaryExercises, ...auxiliaryExercises];
+    const randomExercise = allAvailableExercises[Math.floor(Math.random() * allAvailableExercises.length)];
+    if (!chromosome.includes(randomExercise.id)) {
+      chromosome.push(randomExercise.id);
+    }
+  }
+}
+
+// Função de fitness - Versão modificada para divisão de treino
+function calculateFitness(chromosome, user, allExercises, splitIndex) {
+  let fitness = 0;
+  const split = getTrainingSplits()[splitIndex];
   
   // Converter IDs dos exercícios para objetos
   const exercises = chromosome.map(id => 
     allExercises.find(ex => ex.id === id)
   );
   
-  // 1. Diversidade de grupos musculares!!
-  const muscleGroups = new Set(exercises.map(ex => ex.muscle_group_id));
-  fitness += muscleGroups.size * 15; // +15 pontos por grupo muscular único
+  // 1. Verificar aderência à divisão de treino
+  const exercisesByGroup = {};
+  exercises.forEach(exercise => {
+    const groupId = exercise.muscle_group_id;
+    if (!exercisesByGroup[groupId]) {
+      exercisesByGroup[groupId] = [];
+    }
+    exercisesByGroup[groupId].push(exercise);
+  });
+  
+  // Bonificar exercícios dos grupos principais
+  split.primaryGroups.forEach(groupId => {
+    const groupExercises = exercisesByGroup[groupId] || [];
+    fitness += groupExercises.length * 15; // Pontuação por cada exercício de grupo principal
+    
+    // Penalizar se não houver exercícios suficientes dos grupos principais
+    if (groupExercises.length < 2) {
+      fitness -= 20; // Penalidade por não ter pelo menos 2 exercícios de grupo principal
+    }
+  });
+  
+  // Bonificar exercícios dos grupos secundários
+  split.secondaryGroups.forEach(groupId => {
+    const groupExercises = exercisesByGroup[groupId] || [];
+    fitness += groupExercises.length * 10; // Pontuação por cada exercício de grupo secundário
+    
+    // Penalizar se não houver exercícios suficientes dos grupos secundários
+    if (groupExercises.length < 1) {
+      fitness -= 15; // Penalidade por não ter pelo menos 1 exercício de grupo secundário
+    }
+  });
+  
+  // Bonificar exercícios dos grupos auxiliares
+  split.auxiliaryGroups.forEach(groupId => {
+    const groupExercises = exercisesByGroup[groupId] || [];
+    fitness += groupExercises.length * 5; // Menor pontuação para grupos auxiliares
+  });
   
   // 2. Adequação ao nível de experiência
   const difficultyMap = { 'Fácil': 1, 'Médio': 2, 'Difícil': 3 }; // mapeamento de dificuldades
@@ -553,7 +745,7 @@ function calculateFitness(chromosome, user, allExercises) {
       
     case 'Condicionamento':
       // Favorecer diversidade e exercícios compostos
-      fitness += muscleGroups.size * 5;
+      fitness += Object.keys(exercisesByGroup).length * 5;
       exercises.forEach(exercise => {
         if (!exercise.equipment_required) {
           fitness += 5; // Bonificar exercícios sem equipamento
@@ -576,19 +768,13 @@ function calculateFitness(chromosome, user, allExercises) {
   }
   
   // 4. Penalizar exercícios duplicados do mesmo grupo muscular
-  const muscleGroupCounts = {}; //contador para exercicios por grupo
-  exercises.forEach(exercise => { 
-    const groupId = exercise.muscle_group_id;
-    muscleGroupCounts[groupId] = (muscleGroupCounts[groupId] || 0) + 1;
-  });
-  
-  Object.values(muscleGroupCounts).forEach(count => {
-    if (count > 2) {
-      fitness -= (count - 2) * 15; // Penalizar fortemente mais de 2 exercícios do mesmo grupo (-15)
+  Object.values(exercisesByGroup).forEach(groupExercises => {
+    if (groupExercises.length > 3) {
+      fitness -= (groupExercises.length - 3) * 15; // Penalizar fortemente mais de 3 exercícios do mesmo grupo
     }
   });
   
-  return Math.max(0, fitness); // Garantto que o fitness nunca seja negativo
+  return Math.max(0, fitness); // Garantir que o fitness nunca seja negativo
 }
 
 // Seleção por torneio
@@ -641,39 +827,61 @@ function crossover(parent1, parent2) {
   return offspring; //retorno do filho gerado
 }
 
-// Mutação
-function mutate(chromosome, allExercises) {
-  // Número de mutações
+// Mutação - Versão modificada para respeitar a divisão de treino
+function mutate(chromosome, allExercises, splitIndex) {
+  const split = getTrainingSplits()[splitIndex];
   const mutations = Math.floor(Math.random() * 2) + 1;
   
   for (let i = 0; i < mutations; i++) {
-    // Posição a ser mutada (aleatoriamente)
+    // Posição a ser mutada
     const position = Math.floor(Math.random() * chromosome.length);
     
-    // Selecionar novo exercício
-    let newExercise;
-    do {
-      const randomIndex = Math.floor(Math.random() * allExercises.length);
-      newExercise = allExercises[randomIndex].id;
-    } while (chromosome.includes(newExercise)); //continuar até encontrar exerc unico
+    // Identificar o exercício atual
+    const currentExerciseId = chromosome[position];
+    const currentExercise = allExercises.find(ex => ex.id === currentExerciseId);
     
-    // Aplicar mutação
-    chromosome[position] = newExercise;
+    if (!currentExercise) continue;
+    
+    const currentGroupId = currentExercise.muscle_group_id;
+    
+    // Determinar a qual tipo de grupo o exercício pertence
+    let targetGroups;
+    if (split.primaryGroups.includes(currentGroupId)) {
+      targetGroups = split.primaryGroups; // Substituir por outro exercício de grupo principal
+    } else if (split.secondaryGroups.includes(currentGroupId)) {
+      targetGroups = split.secondaryGroups; // Substituir por outro exercício de grupo secundário
+    } else {
+      targetGroups = split.auxiliaryGroups; // Substituir por outro exercício de grupo auxiliar
+    }
+    
+    // Buscar exercícios candidatos do mesmo tipo de grupo
+    const candidateExercises = allExercises.filter(ex => 
+      targetGroups.includes(ex.muscle_group_id) && 
+      !chromosome.includes(ex.id) &&
+      ex.id !== currentExerciseId
+    );
+    
+    if (candidateExercises.length > 0) {
+      // Selecionar novo exercício aleatoriamente entre os candidatos
+      const randomIndex = Math.floor(Math.random() * candidateExercises.length);
+      const newExercise = candidateExercises[randomIndex];
+      chromosome[position] = newExercise.id;
+    }
   }
 }
 
 // Criar treino a partir do cromossomo (convertir o cromossomo em treino)
-async function createWorkout(chromosome, user, allExercises) {
+async function createWorkout(chromosome, user, allExercises, split) {
   // Obter detalhes dos exercícios
   const selectedExercises = chromosome.map(id => 
     allExercises.find(ex => ex.id === id)
   );
   
-  // Gerar nome e descrição baseados no objetivo e nível
-  let workoutName = `Treino Genético - ${user.goal}`;
-  let workoutDescription = `Treino personalizado por algoritmo genético para ${user.goal.toLowerCase()}, nível ${user.experience_level.toLowerCase()}.`;
+  // Gerar nome e descrição baseados na divisão e objetivo
+  let workoutName = `Treino de ${split.name} - ${user.goal}`;
+  let workoutDescription = `Treino personalizado de ${split.name} para ${user.goal.toLowerCase()}, nível ${user.experience_level.toLowerCase()}.`;
   
-  // Duração estimada baseada na experiência e número de exercícios
+  // Duração estimada baseada na experiência
   const estimatedDuration = user.experience_level === 'Iniciante' ? 45 :  //45 min para iniciantes
                             user.experience_level === 'Intermediário' ? 60 : 75; //60 p intermediarios, 75 avançado
   
@@ -685,26 +893,32 @@ async function createWorkout(chromosome, user, allExercises) {
     experience_level: user.experience_level,
     estimated_duration: estimatedDuration
   });
-  
-  // Configurar parâmetros de cada exercício baseado no objetivo
+
+  // Configurar parâmetros de cada exercício baseado no objetivo e na divisão
   const workoutExercises = [];
   
   selectedExercises.forEach(exercise => {
     let sets, repetitions, rest_time;
     
+    // Verificar se é exercício de grupo principal, secundário ou auxiliar
+    const isPrimaryExercise = split.primaryGroups.includes(exercise.muscle_group_id);
+    const isSecondaryExercise = split.secondaryGroups.includes(exercise.muscle_group_id);
+    
     switch (user.goal) {
       case 'Perda de peso':
-        sets = 3;
-        repetitions = '15,15,15';
+        sets = isPrimaryExercise ? 4 : 3;
+        repetitions = isPrimaryExercise ? '15,15,12,12' : '15,15,15';
         rest_time = 45; // segundos
         break;
       case 'Hipertrofia':
-        sets = user.experience_level === 'Avançado' ? 4 : 3;
-        repetitions = user.experience_level === 'Avançado' ? '12,10,8,6' : '12,10,8';
+        sets = isPrimaryExercise ? 4 : (isSecondaryExercise ? 3 : 2);
+        repetitions = user.experience_level === 'Avançado' ? 
+                     (isPrimaryExercise ? '12,10,8,6' : '12,10,8') : 
+                     (isPrimaryExercise ? '12,10,8,8' : '12,10,10');
         rest_time = 90; // segundos
         break;
       case 'Definição':
-        sets = 4;
+        sets = isPrimaryExercise ? 4 : 3;
         repetitions = '12,12,12,12';
         rest_time = 60; // segundos
         break;
@@ -714,7 +928,7 @@ async function createWorkout(chromosome, user, allExercises) {
         rest_time = 45; // segundos
         break;
       case 'Reabilitação':
-        sets = 3;
+        sets = isPrimaryExercise ? 3 : 2;
         repetitions = '12,12,12';
         rest_time = 60; // segundos
         break;
