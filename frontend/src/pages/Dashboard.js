@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button, Spinner, Badge, Modal, Alert } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { FaDumbbell, FaChartLine, FaClipboardList, FaUserAlt, FaRocket, FaRegThumbsUp, FaArrowRight,FaUtensils, FaListAlt, FaHistory, FaUser, FaMagic, FaCog, FaDna} from 'react-icons/fa';
+import { FaDumbbell, FaInfoCircle, FaChartLine, FaClipboardList, FaUserAlt, FaRocket, FaRegThumbsUp, FaArrowRight,FaUtensils, FaListAlt, FaHistory, FaUser, FaMagic, FaCog, FaDna, FaCalendarAlt, FaCaretRight } from 'react-icons/fa';
 import { AuthContext } from '../context/AuthContext';
 import { WorkoutContext } from '../context/WorkoutContext';
 import workoutService from '../api/workout.service';
@@ -13,7 +13,10 @@ const Dashboard = () => {
     recommendedWorkout, 
     geneticWorkout, 
     geneticLoading, 
-    fetchGeneticWorkout 
+    fetchGeneticWorkout,
+    nextWorkout,
+    nextWorkoutLoading,
+    fetchNextWorkout
   } = useContext(WorkoutContext);
   
   const [loading, setLoading] = useState(true);
@@ -21,7 +24,8 @@ const Dashboard = () => {
   const [stats, setStats] = useState({
     totalWorkouts: 0,
     thisMonth: 0,
-    streak: 0
+    streak: 0,
+    nextRecommendedSplit: ''
   });
   
   // Estados para modal do algoritmo genético
@@ -43,6 +47,11 @@ const Dashboard = () => {
         if (statsResponse.success) {
           setStats(statsResponse.stats);
         }
+        
+        // Fetch next workout if not already loaded
+        if (!nextWorkout) {
+          await fetchNextWorkout();
+        }
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
       } finally {
@@ -51,7 +60,7 @@ const Dashboard = () => {
     };
     
     fetchDashboardData();
-  }, []);
+  }, [fetchNextWorkout, nextWorkout]);
 
   const getBMI = () => {
     if (!currentUser.weight || !currentUser.height) return 'N/A';
@@ -110,6 +119,14 @@ const Dashboard = () => {
                         <span className="ms-2">Nível: <Badge bg="secondary">{currentUser.experience_level}</Badge></span>
                       </p>
                     </div>
+                    {stats.nextRecommendedSplit && (
+                      <div className="ms-auto text-end">
+                        <p className="mb-0 text-muted small">Recomendação atual:</p>
+                        <Badge bg="success" className="fs-6">
+                          <FaDna className="me-1" /> {stats.nextRecommendedSplit}
+                        </Badge>
+                      </div>
+                    )}
                   </div>
                 </Card.Body>
               </Card>
@@ -157,8 +174,70 @@ const Dashboard = () => {
           </Row>
 
           <Row>
+            {/* Next Workout in Sequence */}
+            {nextWorkout && nextWorkout.workout && (
+              <Col lg={6} className="mb-4">
+                <Card className="shadow-sm h-100">
+                  <Card.Header className="bg-success text-white">
+                    <h4 className="mb-0 d-flex align-items-center">
+                      <FaDna className="me-2" />
+                      Próximo Treino na Sequência
+                    </h4>
+                  </Card.Header>
+                  <Card.Body>
+                    <Row>
+                      <Col lg={8}>
+                        <h5>{nextWorkout.workout.name}</h5>
+                        <div className="mb-2">
+                          <Badge bg="primary" className="me-2">{nextWorkout.workout.goal}</Badge>
+                          <Badge bg="secondary" className="me-2">{nextWorkout.workout.experience_level}</Badge>
+                          <Badge bg="info" className="me-2">{nextWorkout.workout.estimated_duration} min</Badge>
+                          {nextWorkout.split_info && (
+                            <Badge bg="success">
+                              <FaDna className="me-1" /> {nextWorkout.split_info.name}
+                            </Badge>
+                          )}
+                        </div>
+                        
+                        {nextWorkout.split_info && (
+                          <Alert variant="info" className="mb-3">
+                            <small>{nextWorkout.split_info.description}</small>
+                          </Alert>
+                        )}
+                        
+                        <p className="mb-3">{nextWorkout.workout.description}</p>
+                        
+                        <div className="d-flex justify-content-between align-items-center">
+                          <Button 
+                            as={Link} 
+                            to={`/workouts/${nextWorkout.workout.id}`} 
+                            variant="success"
+                          >
+                            <FaDumbbell className="me-1" /> Iniciar Este Treino
+                          </Button>
+                        </div>
+                      </Col>
+                      <Col lg={4} className="d-flex align-items-center justify-content-center">
+                        <div className="text-center">
+                          <div className="bg-success text-white rounded-circle p-4 mb-3 mx-auto d-flex align-items-center justify-content-center" style={{ width: '80px', height: '80px' }}>
+                            <FaDna size={32} />
+                          </div>
+                          <p className="text-muted mb-0">
+                            <small>
+                              <strong>Sequência Inteligente</strong><br/>
+                              Otimizada para seus objetivos
+                            </small>
+                          </p>
+                        </div>
+                      </Col>
+                    </Row>
+                  </Card.Body>
+                </Card>
+              </Col>
+            )}
+
             {/* Recommended Workout */}
-            <Col lg={6} className="mb-4">
+            <Col lg={nextWorkout && nextWorkout.workout ? 6 : 12} className="mb-4">
               <Card className="shadow-sm h-100">
                 <Card.Header className="bg-primary text-white">
                   <h4 className="mb-0">Treino Recomendado</h4>
@@ -261,6 +340,16 @@ const Dashboard = () => {
                               Feedback: {item.feedback}
                             </p>
                           </div>
+                          <div className="ms-2">
+                            <Button 
+                              as={Link}
+                              to={`/workouts/${item.workout.id}`}
+                              variant="outline-primary"
+                              size="sm"
+                            >
+                              <FaCaretRight />
+                            </Button>
+                          </div>
                         </div>
                       ))}
                       <div className="text-center mt-2">
@@ -275,6 +364,94 @@ const Dashboard = () => {
                       </Button>
                     </div>
                   )}
+                </Card.Body>
+              </Card>
+            </Col>
+          
+            {/* Training Schedule */}
+            <Col lg={6} className="mb-4">
+              <Card className="shadow-sm h-100">
+                <Card.Header className="bg-info text-white">
+                  <h4 className="mb-0 d-flex align-items-center">
+                    <FaCalendarAlt className="me-2" />
+                    Sequência de Treino
+                  </h4>
+                </Card.Header>
+                <Card.Body>
+                  <Alert variant="info" className="mb-4">
+                    <div className="d-flex">
+                      <FaInfoCircle className="me-2 mt-1" />
+                      <div>
+                        <p className="mb-0">Nosso sistema usa uma sequência inteligente de treinos para garantir o desenvolvimento equilibrado de todos os grupos musculares e recuperação adequada.</p>
+                      </div>
+                    </div>
+                  </Alert>
+                  
+                  <div className="table-responsive">
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th>Divisão</th>
+                          <th>Foco Principal</th>
+                          <th>Foco Secundário</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className={stats.nextRecommendedSplit === "Peito e Tríceps" ? "table-success" : ""}>
+                          <td>
+                            <strong>A</strong>
+                            {stats.nextRecommendedSplit === "Peito e Tríceps" && (
+                              <Badge bg="success" className="ms-2">Próximo</Badge>
+                            )}
+                          </td>
+                          <td>Peito</td>
+                          <td>Tríceps</td>
+                        </tr>
+                        <tr className={stats.nextRecommendedSplit === "Costas e Bíceps" ? "table-success" : ""}>
+                          <td>
+                            <strong>B</strong>
+                            {stats.nextRecommendedSplit === "Costas e Bíceps" && (
+                              <Badge bg="success" className="ms-2">Próximo</Badge>
+                            )}
+                          </td>
+                          <td>Costas</td>
+                          <td>Bíceps</td>
+                        </tr>
+                        <tr className={stats.nextRecommendedSplit === "Pernas e Glúteos" ? "table-success" : ""}>
+                          <td>
+                            <strong>C</strong>
+                            {stats.nextRecommendedSplit === "Pernas e Glúteos" && (
+                              <Badge bg="success" className="ms-2">Próximo</Badge>
+                            )}
+                          </td>
+                          <td>Pernas</td>
+                          <td>Glúteos</td>
+                        </tr>
+                        <tr className={stats.nextRecommendedSplit === "Ombros e Core" ? "table-success" : ""}>
+                          <td>
+                            <strong>D</strong>
+                            {stats.nextRecommendedSplit === "Ombros e Core" && (
+                              <Badge bg="success" className="ms-2">Próximo</Badge>
+                            )}
+                          </td>
+                          <td>Ombros</td>
+                          <td>Abdômen</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  
+                  <div className="d-grid mt-3">
+                    <Button 
+                      as={Link} 
+                      to={nextWorkout && nextWorkout.workout ? `/workouts/${nextWorkout.workout.id}` : "/workouts"} 
+                      variant="info" 
+                      className="text-white"
+                    >
+                      <FaDumbbell className="me-2" />
+                      {nextWorkout && nextWorkout.workout ? "Iniciar Próximo Treino" : "Ver Todos os Treinos"}
+                    </Button>
+                  </div>
                 </Card.Body>
               </Card>
             </Col>

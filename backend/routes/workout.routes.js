@@ -25,6 +25,4 @@ router.put('/:id', controller.update);
 // Delete a workout
 router.delete('/:id', controller.delete);
 
-
-
 module.exports = router;

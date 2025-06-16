@@ -66,6 +66,16 @@ class HistoryService {
       throw error;
     }
   }
+
+  // Novo método para obter o próximo treino recomendado
+  async getNextWorkout() {
+    try {
+      const response = await axios.get(API_URL + 'next-workout', { headers: authHeader() });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default new HistoryService();

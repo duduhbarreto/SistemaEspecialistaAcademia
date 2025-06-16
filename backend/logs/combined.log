@@ -1534,3 +1534,75 @@
 2025-06-16 13:27:14 [INFO]: Geração 15 completa - melhor fitness: 162 {
   "service": "gym-expert-api"
 }
+2025-06-16 13:49:44 [INFO]: Database connection has been established successfully. {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:49:45 [INFO]: Database synchronized successfully. {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:49:45 [INFO]: Server is running on port 5000 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:59:08 [INFO]: Database connection has been established successfully. {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:59:09 [INFO]: Database synchronized successfully. {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:59:09 [INFO]: Server is running on port 5000 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:59:47 [INFO]: Database connection has been established successfully. {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:59:48 [INFO]: Database synchronized successfully. {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:59:48 [INFO]: Server is running on port 5000 {
+  "service": "gym-expert-api"
+}
+2025-06-16 14:00:21 [INFO]: Database connection has been established successfully. {
+  "service": "gym-expert-api"
+}
+2025-06-16 14:00:22 [INFO]: Database synchronized successfully. {
+  "service": "gym-expert-api"
+}
+2025-06-16 14:00:22 [INFO]: Server is running on port 5000 {
+  "service": "gym-expert-api"
+}
+2025-06-16 15:29:45 [INFO]: Database connection has been established successfully. {
+  "service": "gym-expert-api"
+}
+2025-06-16 15:29:45 [INFO]: Database synchronized successfully. {
+  "service": "gym-expert-api"
+}
+2025-06-16 15:29:45 [INFO]: Server is running on port 5000 {
+  "service": "gym-expert-api"
+}
+2025-06-16 15:29:59 [INFO]: Fetching all workouts, requested by user id: 1 {
+  "service": "gym-expert-api"
+}
+2025-06-16 15:29:59 [INFO]: Found 25 workouts {
+  "service": "gym-expert-api"
+}
+2025-06-16 15:32:39 [INFO]: Fetching all workouts, requested by user id: 1 {
+  "service": "gym-expert-api"
+}
+2025-06-16 15:32:39 [INFO]: Found 25 workouts {
+  "service": "gym-expert-api"
+}
+2025-06-16 15:38:25 [INFO]: Fetching all workouts, requested by user id: 1 {
+  "service": "gym-expert-api"
+}
+2025-06-16 15:38:25 [INFO]: Found 25 workouts {
+  "service": "gym-expert-api"
+}
+2025-06-16 15:38:58 [INFO]: Database connection has been established successfully. {
+  "service": "gym-expert-api"
+}
+2025-06-16 15:38:59 [INFO]: Database synchronized successfully. {
+  "service": "gym-expert-api"
+}
+2025-06-16 15:38:59 [INFO]: Server is running on port 5000 {
+  "service": "gym-expert-api"
+}

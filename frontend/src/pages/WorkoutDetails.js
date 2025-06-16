@@ -4,11 +4,12 @@ import { Container, Row, Col, Card, Badge, Button, Table, Modal, Form, Spinner, 
 import { toast } from 'react-toastify';
 import { FaDumbbell, FaClock, FaChartLine, FaClipboardCheck, FaDna, FaInfoCircle, FaCog, FaExclamationTriangle } from 'react-icons/fa';
 import { WorkoutContext } from '../context/WorkoutContext';
+import NextWorkoutModal from '../components/workouts/NextWorkoutModal';
 
 const WorkoutDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getWorkout, recordWorkout, loading } = useContext(WorkoutContext);
+  const { getWorkout, recordWorkout, loading, nextWorkout } = useContext(WorkoutContext);
   
   const [workout, setWorkout] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -16,6 +17,10 @@ const WorkoutDetails = () => {
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [loadingError, setLoadingError] = useState(null);
+  
+  // State for next workout modal
+  const [showNextWorkoutModal, setShowNextWorkoutModal] = useState(false);
+  const [currentNextWorkout, setCurrentNextWorkout] = useState(null);
   
   // New state to track if this is a genetic workout
   const [isGeneticWorkout, setIsGeneticWorkout] = useState(false);
@@ -127,12 +132,20 @@ const WorkoutDetails = () => {
       
       if (success) {
         setShowModal(false);
-        toast.success('Treino registrado com sucesso!');
         
-        // Pequeno delay antes de navegar para permitir que o toast seja visto
-        setTimeout(() => {
-          navigate('/history');
-        }, 1000);
+        // Se o registro foi bem-sucedido, preparar para mostrar o próximo treino
+        // O nextWorkout é atualizado automaticamente pelo WorkoutContext após registro
+        if (nextWorkout) {
+          console.log("Mostrando próximo treino:", nextWorkout);
+          setCurrentNextWorkout(nextWorkout);
+          setShowNextWorkoutModal(true);
+        } else {
+          console.log("Nenhum próximo treino disponível");
+          // Navegar para o histórico após um pequeno atraso
+          setTimeout(() => {
+            navigate('/history');
+          }, 1000);
+        }
       } else {
         toast.error('Falha ao registrar treino. Tente novamente.');
       }
@@ -487,6 +500,17 @@ const WorkoutDetails = () => {
           </Form>
         </Modal.Body>
       </Modal>
+      
+      {/* Next Workout Modal */}
+      <NextWorkoutModal 
+        show={showNextWorkoutModal}
+        onHide={() => {
+          setShowNextWorkoutModal(false);
+          // Navegar para o histórico após fechar o modal
+          navigate('/history');
+        }}
+        nextWorkout={currentNextWorkout}
+      />
     </Container>
   );
 };

@@ -5,8 +5,13 @@ const Exercise = db.exercise;
 const MuscleGroup = db.muscleGroup;
 const Sequelize = db.Sequelize;
 const Op = db.Sequelize.Op;
+const logger = require('../utils/logger');
 
-// Create a workout history record
+// Importar as funções necessárias do workout.controller
+// Note: Em uma implementação real, seria melhor reorganizar estas funções em um módulo compartilhado
+const { getTrainingSplits, getRecommendedSplit, geneticAlgorithm } = require('./workout.controller');
+
+// Create a workout history record with next workout recommendation
 exports.create = async (req, res) => {
   try {
     // Create history
@@ -18,12 +23,58 @@ exports.create = async (req, res) => {
       notes: req.body.notes
     });
 
+    // Get the completed workout details
+    const completedWorkout = await Workout.findByPk(req.body.workout_id, {
+      include: [
+        {
+          model: Exercise,
+          include: [MuscleGroup]
+        }
+      ]
+    });
+
+    // Get user data for next workout recommendation
+    const user = await db.user.findByPk(req.userId);
+    
+    // Get all exercises for the genetic algorithm
+    const allExercises = await Exercise.findAll({
+      include: [{ model: MuscleGroup }]
+    });
+    
+    // Get existing workouts for inspiration
+    const existingWorkouts = await Workout.findAll({
+      include: [{
+        model: Exercise,
+        through: {
+          attributes: ['sets', 'repetitions', 'rest_time']
+        },
+        include: [{ model: MuscleGroup }]
+      }]
+    });
+
+    // Determine the next split based on training history
+    const currentSplitIndex = await getCurrentSplit(completedWorkout);
+    const nextSplitIndex = await getNextSplitIndex(currentSplitIndex, req.userId);
+    logger.info(`User ${req.userId} completed a ${getTrainingSplits()[currentSplitIndex]?.name || 'unknown'} workout, next recommended split: ${getTrainingSplits()[nextSplitIndex]?.name || 'unknown'}`);
+
+    // Generate next workout using genetic algorithm
+    const nextWorkout = await geneticAlgorithm(user, allExercises, existingWorkouts, nextSplitIndex);
+
+    // Return both the created history and the next recommended workout
     return res.status(201).json({
       success: true,
       message: 'Treino registrado com sucesso',
-      history: history
+      history: history,
+      nextWorkout: {
+        workout: nextWorkout,
+        split_info: {
+          name: getTrainingSplits()[nextSplitIndex].name,
+          description: `Próximo treino recomendado na sequência: foco em ${getTrainingSplits()[nextSplitIndex].name}.`
+        }
+      }
     });
   } catch (error) {
+    logger.error('Error recording workout history:', error);
     return res.status(500).json({
       success: false,
       message: 'Falha ao registrar treino',
@@ -32,7 +83,61 @@ exports.create = async (req, res) => {
   }
 };
 
-// Get all workout history for a user
+// Helper function to determine the current split based on the completed workout
+async function getCurrentSplit(workout) {
+  if (!workout) return 0;
+  
+  // Extract muscle groups from the workout
+  const muscleGroupIds = workout.exercises.map(ex => ex.muscle_group_id);
+  const uniqueGroupIds = [...new Set(muscleGroupIds)];
+  
+  // Get all training splits
+  const splits = getTrainingSplits();
+  
+  // Find the split that best matches the workout's muscle groups
+  let bestMatch = 0;
+  let bestMatchScore = -1;
+  
+  splits.forEach((split, index) => {
+    let score = 0;
+    
+    // Score primary groups matches
+    split.primaryGroups.forEach(groupId => {
+      if (uniqueGroupIds.includes(groupId)) {
+        score += 3;
+      }
+    });
+    
+    // Score secondary groups matches
+    split.secondaryGroups.forEach(groupId => {
+      if (uniqueGroupIds.includes(groupId)) {
+        score += 2;
+      }
+    });
+    
+    if (score > bestMatchScore) {
+      bestMatchScore = score;
+      bestMatch = index;
+    }
+  });
+  
+  return bestMatch;
+}
+
+// Helper function to determine the next split in the sequence
+async function getNextSplitIndex(currentSplitIndex, userId) {
+  const splits = getTrainingSplits();
+  
+  // Simple sequential progression through splits
+  const nextIndex = (currentSplitIndex + 1) % splits.length;
+  
+  // Advanced logic: check if we should skip any split based on training history
+  // For now, we'll use a simple sequential approach
+  return nextIndex;
+}
+
+// The rest of the controller functions remain unchanged
+// Obter todos os workout history para um usuário
 exports.findAll = async (req, res) => {
   try {
     const histories = await WorkoutHistory.findAll({
@@ -156,12 +261,17 @@ exports.getStats = async (req, res) => {
       }
     }
     
+    // Get next recommended workout
+    let nextRecommendedSplit = await getRecommendedSplit(req.userId);
+    const splits = getTrainingSplits();
+    
     return res.status(200).json({
       success: true,
       stats: {
         totalWorkouts,
         thisMonth,
-        streak
+        streak,
+        nextRecommendedSplit: splits[nextRecommendedSplit].name
       }
     });
   } catch (error) {
@@ -251,6 +361,60 @@ exports.delete = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: 'Falha ao excluir registro de treino',
+      error: error.message
+    });
+  }
+};
+
+// New endpoint to get next recommended workout
+exports.getNextWorkout = async (req, res) => {
+  try {
+    // Get the user info
+    const user = await db.user.findByPk(req.userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuário não encontrado'
+      });
+    }
+
+    // Get all exercises for the genetic algorithm
+    const allExercises = await Exercise.findAll({
+      include: [{ model: MuscleGroup }]
+    });
+    
+    // Get existing workouts for inspiration
+    const existingWorkouts = await Workout.findAll({
+      include: [{
+        model: Exercise,
+        through: {
+          attributes: ['sets', 'repetitions', 'rest_time']
+        },
+        include: [{ model: MuscleGroup }]
+      }]
+    });
+
+    // Determine the next recommended split
+    const nextSplitIndex = await getRecommendedSplit(req.userId);
+    const splits = getTrainingSplits();
+
+    // Generate next workout using genetic algorithm
+    const nextWorkout = await geneticAlgorithm(user, allExercises, existingWorkouts, nextSplitIndex);
+
+    return res.status(200).json({
+      success: true,
+      workout: nextWorkout,
+      split_info: {
+        name: splits[nextSplitIndex].name,
+        description: `Próximo treino recomendado na sequência: foco em ${splits[nextSplitIndex].name}.`,
+        split_details: splits[nextSplitIndex]
+      }
+    });
+  } catch (error) {
+    logger.error('Error getting next recommended workout:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Falha ao gerar próximo treino recomendado',
       error: error.message
     });
   }

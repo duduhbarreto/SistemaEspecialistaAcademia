@@ -15,6 +15,10 @@ export const WorkoutProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [geneticLoading, setGeneticLoading] = useState(false);
   const [initialized, setInitialized] = useState(false);
+  
+  // State for next recommended workout in sequence
+  const [nextWorkout, setNextWorkout] = useState(null);
+  const [nextWorkoutLoading, setNextWorkoutLoading] = useState(false);
 
   // Use useCallback para evitar recriações de funções
   const fetchWorkouts = useCallback(async () => {
@@ -76,6 +80,27 @@ export const WorkoutProvider = ({ children }) => {
     }
   }, []);
 
+  // NOVO: Função para buscar o próximo treino na sequência
+  const fetchNextWorkout = useCallback(async () => {
+    console.log("Fetching next workout in sequence...");
+    try {
+      setNextWorkoutLoading(true);
+      const response = await historyService.getNextWorkout();
+      if (response && response.success) {
+        setNextWorkout(response);
+        return response;
+      } else {
+        console.error("Failed to fetch next workout in sequence:", response);
+        return response;
+      }
+    } catch (error) {
+      console.error('Error fetching next workout:', error);
+      return { success: false, message: 'Erro ao buscar próximo treino' };
+    } finally {
+      setNextWorkoutLoading(false);
+    }
+  }, []);
+
   const fetchWorkoutHistory = useCallback(async () => {
     console.log("Fetching workout history...");
     try {
@@ -100,11 +125,13 @@ export const WorkoutProvider = ({ children }) => {
         await fetchWorkouts();
         await fetchRecommendedWorkout();
         await fetchWorkoutHistory();
+        // Inicialmente buscar o próximo treino da sequência
+        await fetchNextWorkout();
       }
     };
     
     loadData();
-  }, [currentUser, initialized, fetchWorkouts, fetchRecommendedWorkout, fetchWorkoutHistory]);
+  }, [currentUser, initialized, fetchWorkouts, fetchRecommendedWorkout, fetchWorkoutHistory, fetchNextWorkout]);
 
   const getWorkout = useCallback(async (id) => {
     console.log(`Getting workout with id: ${id}`);
@@ -135,6 +162,13 @@ export const WorkoutProvider = ({ children }) => {
       if (response && response.success) {
         // Refresh workout history
         await fetchWorkoutHistory();
+        
+        // NOVO: Se houver um próximo treino retornado, atualizar o estado
+        if (response.nextWorkout) {
+          setNextWorkout(response.nextWorkout);
+          console.log("Next workout in sequence updated:", response.nextWorkout);
+        }
+        
         toast.success('Treino registrado com sucesso!');
         return true;
       } else {
@@ -158,10 +192,13 @@ export const WorkoutProvider = ({ children }) => {
     workoutHistory,
     loading,
     geneticLoading,
+    nextWorkout,
+    nextWorkoutLoading,
     fetchWorkouts,
     fetchRecommendedWorkout,
     fetchGeneticWorkout,
     fetchWorkoutHistory,
+    fetchNextWorkout,
     getWorkout,
     recordWorkout
   };
@@ -170,9 +207,11 @@ export const WorkoutProvider = ({ children }) => {
     workoutsCount: workouts.length,
     hasRecommendedWorkout: !!recommendedWorkout,
     hasGeneticWorkout: !!geneticWorkout,
+    hasNextWorkout: !!nextWorkout,
     historyCount: workoutHistory.length,
     loading,
     geneticLoading,
+    nextWorkoutLoading,
     initialized
   });
 

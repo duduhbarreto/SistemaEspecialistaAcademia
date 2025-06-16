@@ -18,6 +18,9 @@ router.get('/recent', controller.getRecent);
 // Get workout history stats
 router.get('/stats', controller.getStats);
 
+// Get next recommended workout
+router.get('/next-workout', controller.getNextWorkout);
+
 // Get a single workout history entry
 router.get('/:id', controller.findOne);
 
