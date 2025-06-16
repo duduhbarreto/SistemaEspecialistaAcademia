@@ -1264,3 +1264,273 @@
 2025-06-15 21:10:36 [INFO]: Server is running on port 5000 {
   "service": "gym-expert-api"
 }
+2025-06-16 13:24:43 [INFO]: Database connection has been established successfully. {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:24:43 [INFO]: Database synchronized successfully. {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:24:43 [INFO]: Server is running on port 5000 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:24:58 [INFO]: Fetching all workouts, requested by user id: 1 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:24:58 [INFO]: Found 20 workouts {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:25:32 [INFO]: recomendação genética de treino para usuário: 1 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:25:32 [INFO]: Iniciando algoritmo genético - população: 20, gerações: 15, divisão: Peito e Tríceps {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:25:32 [INFO]: Geração 1 completa - melhor fitness: 170 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:25:32 [INFO]: Geração 2 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:25:32 [INFO]: Geração 3 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:25:32 [INFO]: Geração 4 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:25:32 [INFO]: Geração 5 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:25:32 [INFO]: Geração 6 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:25:32 [INFO]: Geração 7 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:25:32 [INFO]: Geração 8 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:25:32 [INFO]: Geração 9 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:25:32 [INFO]: Geração 10 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:25:32 [INFO]: Geração 11 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:25:32 [INFO]: Geração 12 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:25:32 [INFO]: Geração 13 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:25:32 [INFO]: Geração 14 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:25:32 [INFO]: Geração 15 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:14 [INFO]: recomendação genética de treino para usuário: 1 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:14 [INFO]: Iniciando algoritmo genético - população: 20, gerações: 15, divisão: Peito e Tríceps {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:14 [INFO]: Geração 1 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:14 [INFO]: Geração 2 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:14 [INFO]: Geração 3 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:14 [INFO]: Geração 4 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:14 [INFO]: Geração 5 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:14 [INFO]: Geração 6 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:14 [INFO]: Geração 7 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:14 [INFO]: Geração 8 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:14 [INFO]: Geração 9 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:14 [INFO]: Geração 10 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:14 [INFO]: Geração 11 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:15 [INFO]: Geração 12 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:15 [INFO]: Geração 13 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:15 [INFO]: Geração 14 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:15 [INFO]: Geração 15 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:48 [INFO]: recomendação genética de treino para usuário: 1 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:48 [INFO]: Iniciando algoritmo genético - população: 20, gerações: 15, divisão: Peito e Tríceps {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:48 [INFO]: Geração 1 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:48 [INFO]: Geração 2 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:48 [INFO]: Geração 3 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:48 [INFO]: Geração 4 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:48 [INFO]: Geração 5 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:48 [INFO]: Geração 6 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:48 [INFO]: Geração 7 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:48 [INFO]: Geração 8 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:48 [INFO]: Geração 9 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:48 [INFO]: Geração 10 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:48 [INFO]: Geração 11 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:48 [INFO]: Geração 12 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:48 [INFO]: Geração 13 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:48 [INFO]: Geração 14 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:26:48 [INFO]: Geração 15 completa - melhor fitness: 172 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:05 [INFO]: recomendação genética de treino para usuário: 1 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:05 [INFO]: Iniciando algoritmo genético - população: 20, gerações: 15, divisão: Costas e Bíceps {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:05 [INFO]: Geração 1 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:05 [INFO]: Geração 2 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:05 [INFO]: Geração 3 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:05 [INFO]: Geração 4 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:05 [INFO]: Geração 5 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:05 [INFO]: Geração 6 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:05 [INFO]: Geração 7 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:05 [INFO]: Geração 8 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:05 [INFO]: Geração 9 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:05 [INFO]: Geração 10 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:05 [INFO]: Geração 11 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:05 [INFO]: Geração 12 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:05 [INFO]: Geração 13 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:05 [INFO]: Geração 14 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:05 [INFO]: Geração 15 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:14 [INFO]: recomendação genética de treino para usuário: 1 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:14 [INFO]: Iniciando algoritmo genético - população: 20, gerações: 15, divisão: Costas e Bíceps {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:14 [INFO]: Geração 1 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:14 [INFO]: Geração 2 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:14 [INFO]: Geração 3 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:14 [INFO]: Geração 4 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:14 [INFO]: Geração 5 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:14 [INFO]: Geração 6 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:14 [INFO]: Geração 7 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:14 [INFO]: Geração 8 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:14 [INFO]: Geração 9 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:14 [INFO]: Geração 10 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:14 [INFO]: Geração 11 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:14 [INFO]: Geração 12 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:14 [INFO]: Geração 13 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:14 [INFO]: Geração 14 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
+2025-06-16 13:27:14 [INFO]: Geração 15 completa - melhor fitness: 162 {
+  "service": "gym-expert-api"
+}
