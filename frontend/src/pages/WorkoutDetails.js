@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, Badge, Button, Table, Modal, Form, Spinner, Alert } from 'react-bootstrap';
 import { toast } from 'react-toastify';
-import { FaDumbbell, FaClock, FaChartLine, FaClipboardCheck, FaDna, FaInfoCircle, FaCog } from 'react-icons/fa';
+import { FaDumbbell, FaClock, FaChartLine, FaClipboardCheck, FaDna, FaInfoCircle, FaCog, FaExclamationTriangle } from 'react-icons/fa';
 import { WorkoutContext } from '../context/WorkoutContext';
 
 const WorkoutDetails = () => {
@@ -15,30 +15,96 @@ const WorkoutDetails = () => {
   const [feedback, setFeedback] = useState('Adequado');
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [loadingError, setLoadingError] = useState(null);
   
   // New state to track if this is a genetic workout
   const [isGeneticWorkout, setIsGeneticWorkout] = useState(false);
   
   useEffect(() => {
     const fetchWorkoutDetails = async () => {
-      const response = await getWorkout(id);
-      if (response.success) {
-        setWorkout(response.workout);
-        
-        // Check if this is a genetic workout based on the name or additional properties
-        // Different ways to detect a genetic workout:
-        // 1. Check if the workout has a "genetic" property
-        // 2. Check if the workout name contains "Genético" or "Genetic"
-        // 3. Check if the workout has a split_info property (which is only in genetic workouts)
-        setIsGeneticWorkout(
-          (response.workout.genetic === true) || 
-          (response.workout.name.includes('Genético') || response.workout.name.includes('Genetic')) ||
-          (response.workout.split_info !== undefined)
-        );
-        
-      } else {
-        toast.error('Falha ao carregar detalhes do treino');
+      // Validação 1: Verificar se o ID foi fornecido
+      if (!id) {
+        console.error('ID de treino não fornecido');
+        setLoadingError('ID de treino não fornecido');
+        toast.error('ID de treino não fornecido');
         navigate('/workouts');
+        return;
+      }
+      
+      // Validação 2: Verificar se é o ID problemático 'genetic-recommendation'
+      if (id === 'genetic-recommendation') {
+        console.error('Tentativa de acessar rota genetic-recommendation como treino');
+        setLoadingError('Rota inválida');
+        toast.error('Este não é um treino válido. Use a função "Gerar Treino com IA Genética" para criar um novo treino.');
+        navigate('/workouts');
+        return;
+      }
+      
+      // Validação 3: Verificar se o ID é numérico (IDs válidos devem ser números)
+      const numericId = parseInt(id);
+      if (isNaN(numericId) || numericId.toString() !== id.toString()) {
+        console.error('ID de treino não é numérico:', id);
+        setLoadingError('ID de treino inválido');
+        toast.error('ID de treino inválido. Redirecionando para a lista de treinos.');
+        navigate('/workouts');
+        return;
+      }
+      
+      // Validação 4: Verificar se o ID é positivo
+      if (numericId <= 0) {
+        console.error('ID de treino deve ser positivo:', numericId);
+        setLoadingError('ID de treino inválido');
+        toast.error('ID de treino inválido.');
+        navigate('/workouts');
+        return;
+      }
+      
+      // Se chegou até aqui, o ID está válido - prosseguir com a busca
+      console.log('Buscando treino com ID válido:', numericId);
+      
+      try {
+        const response = await getWorkout(numericId);
+        
+        if (response && response.success && response.workout) {
+          console.log('Treino carregado com sucesso:', response.workout);
+          setWorkout(response.workout);
+          setLoadingError(null);
+          
+          // Check if this is a genetic workout based on various indicators
+          const isGenetic = (
+            (response.workout.genetic === true) || 
+            (response.workout.name && (response.workout.name.includes('Genético') || response.workout.name.includes('Genetic'))) ||
+            (response.workout.split_info !== undefined) ||
+            (response.workout.description && response.workout.description.includes('algoritmo genético'))
+          );
+          
+          setIsGeneticWorkout(isGenetic);
+          
+          if (isGenetic) {
+            console.log('Treino genético identificado');
+          }
+          
+        } else {
+          console.error('Erro ao carregar treino:', response);
+          const errorMessage = response?.message || 'Falha ao carregar detalhes do treino';
+          setLoadingError(errorMessage);
+          toast.error(errorMessage);
+          
+          // Se o treino não foi encontrado, redirecionar após um delay
+          setTimeout(() => {
+            navigate('/workouts');
+          }, 2000);
+        }
+      } catch (error) {
+        console.error('Exceção ao carregar treino:', error);
+        const errorMessage = 'Erro de conexão ao carregar treino';
+        setLoadingError(errorMessage);
+        toast.error(errorMessage);
+        
+        // Redirecionar após erro de conexão
+        setTimeout(() => {
+          navigate('/workouts');
+        }, 3000);
       }
     };
     
@@ -47,29 +113,60 @@ const WorkoutDetails = () => {
   
   const handleCompleteWorkout = async (e) => {
     e.preventDefault();
+    
+    if (!workout || !workout.id) {
+      toast.error('Erro: Dados do treino inválidos');
+      return;
+    }
+    
     setSubmitting(true);
     
     try {
+      console.log('Registrando treino:', { workoutId: workout.id, feedback, notes });
       const success = await recordWorkout(workout.id, feedback, notes);
       
       if (success) {
         setShowModal(false);
         toast.success('Treino registrado com sucesso!');
-        navigate('/history');
+        
+        // Pequeno delay antes de navegar para permitir que o toast seja visto
+        setTimeout(() => {
+          navigate('/history');
+        }, 1000);
+      } else {
+        toast.error('Falha ao registrar treino. Tente novamente.');
       }
     } catch (error) {
       console.error('Error recording workout:', error);
-      toast.error('Falha ao registrar treino');
+      toast.error('Erro ao registrar treino. Verifique sua conexão.');
     } finally {
       setSubmitting(false);
     }
   };
   
+  // Loading state com melhor tratamento de erros
   if (loading || !workout) {
     return (
       <Container className="py-5 text-center">
-        <Spinner animation="border" variant="primary" />
-        <p className="mt-3">Carregando detalhes do treino...</p>
+        {loadingError ? (
+          <Alert variant="danger" className="mb-4">
+            <div className="d-flex align-items-center justify-content-center">
+              <FaExclamationTriangle className="me-2" />
+              <div>
+                <h5>Erro ao Carregar Treino</h5>
+                <p className="mb-2">{loadingError}</p>
+                <Button variant="outline-danger" as={Link} to="/workouts">
+                  Voltar para Treinos
+                </Button>
+              </div>
+            </div>
+          </Alert>
+        ) : (
+          <>
+            <Spinner animation="border" variant="primary" />
+            <p className="mt-3">Carregando detalhes do treino...</p>
+          </>
+        )}
       </Container>
     );
   }
@@ -97,6 +194,7 @@ const WorkoutDetails = () => {
           <Button 
             variant="primary"
             onClick={() => setShowModal(true)}
+            disabled={!workout.id}
           >
             <FaClipboardCheck className="me-2" />
             Registrar Treino
@@ -127,7 +225,7 @@ const WorkoutDetails = () => {
             <Card.Body>
               <div className="mb-4">
                 <h5>Descrição</h5>
-                <p>{workout.description}</p>
+                <p>{workout.description || 'Descrição não disponível.'}</p>
               </div>
               
               {/* Display split info if available (genetic workouts) */}
@@ -144,17 +242,17 @@ const WorkoutDetails = () => {
               <div className="d-flex flex-wrap mb-4">
                 <div className="me-4 mb-3">
                   <h6 className="text-muted mb-1">Objetivo</h6>
-                  <Badge bg="primary" className="fs-6">{workout.goal}</Badge>
+                  <Badge bg="primary" className="fs-6">{workout.goal || 'N/A'}</Badge>
                 </div>
                 <div className="me-4 mb-3">
                   <h6 className="text-muted mb-1">Nível</h6>
-                  <Badge bg="secondary" className="fs-6">{workout.experience_level}</Badge>
+                  <Badge bg="secondary" className="fs-6">{workout.experience_level || 'N/A'}</Badge>
                 </div>
                 <div className="mb-3">
                   <h6 className="text-muted mb-1">Duração Estimada</h6>
                   <div className="d-flex align-items-center">
                     <FaClock className="text-primary me-2" />
-                    <span>{workout.estimated_duration} minutos</span>
+                    <span>{workout.estimated_duration || 'N/A'} minutos</span>
                   </div>
                 </div>
               </div>
@@ -177,19 +275,22 @@ const WorkoutDetails = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {workout.exercises.map(exercise => (
-                        <tr key={exercise.id}>
-                          <td data-label="Exercício">{exercise.name}</td>
+                      {workout.exercises.map((exercise, index) => (
+                        <tr key={exercise.id || index}>
+                          <td data-label="Exercício">{exercise.name || 'N/A'}</td>
                           <td data-label="Grupo Muscular">{exercise.muscle_group?.name || 'N/A'}</td>
-                          <td data-label="Séries">{exercise.workout_exercise.sets}</td>
-                          <td data-label="Repetições">{exercise.workout_exercise.repetitions}</td>
-                          <td data-label="Descanso">{exercise.workout_exercise.rest_time} segundos</td>
+                          <td data-label="Séries">{exercise.workout_exercise?.sets || 'N/A'}</td>
+                          <td data-label="Repetições">{exercise.workout_exercise?.repetitions || 'N/A'}</td>
+                          <td data-label="Descanso">{exercise.workout_exercise?.rest_time || 'N/A'} segundos</td>
                         </tr>
                       ))}
                     </tbody>
                   </Table>
                 ) : (
-                  <p>Nenhum exercício encontrado para este treino.</p>
+                  <Alert variant="warning">
+                    <FaInfoCircle className="me-2" />
+                    Nenhum exercício encontrado para este treino.
+                  </Alert>
                 )}
               </div>
             </Card.Body>
@@ -275,7 +376,7 @@ const WorkoutDetails = () => {
           )}
           
           <Card className="shadow-sm">
-            <Card.Header className={isGeneticWorkout ? "bg-success text-white" : "bg-success text-white"}>
+            <Card.Header className="bg-success text-white">
               <h5 className="mb-0">Dicas</h5>
             </Card.Header>
             <Card.Body>
@@ -284,8 +385,9 @@ const WorkoutDetails = () => {
               <p><strong>Alimentação:</strong> Consuma proteínas e carboidratos após o treino para recuperação.</p>
               <div className="d-grid mt-4">
                 <Button 
-                  variant={isGeneticWorkout ? "success" : "success"}
+                  variant="success"
                   onClick={() => setShowModal(true)}
+                  disabled={!workout.id}
                 >
                   {isGeneticWorkout ? (
                     <>
@@ -363,7 +465,7 @@ const WorkoutDetails = () => {
               <Button 
                 variant="primary" 
                 type="submit"
-                disabled={submitting}
+                disabled={submitting || !workout.id}
               >
                 {submitting ? (
                   <>

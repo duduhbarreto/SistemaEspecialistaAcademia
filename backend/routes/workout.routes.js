@@ -13,6 +13,7 @@ router.post('/', controller.create);
 router.get('/', controller.findAll);
 
 // Get recommended workout for user
+router.get('/genetic-recommendation', controller.getRecommendedGenetic);
 router.get('/recommended', controller.getRecommended);
 
 // Get a single workout
@@ -24,6 +25,6 @@ router.put('/:id', controller.update);
 // Delete a workout
 router.delete('/:id', controller.delete);
 
-router.get('/genetic-recommendation', controller.getRecommendedGenetic);
+
 
 module.exports = router;
