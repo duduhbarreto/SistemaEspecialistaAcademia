@@ -1219,3 +1219,48 @@
 2025-06-15 20:52:18 [INFO]: Server is running on port 5000 {
   "service": "gym-expert-api"
 }
+2025-06-15 20:55:50 [INFO]: Database connection has been established successfully. {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:55:50 [INFO]: Database synchronized successfully. {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:55:50 [INFO]: Server is running on port 5000 {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:56:13 [INFO]: Tentativa de login {
+  "service": "gym-expert-api",
+  "email": "admin@example.com"
+}
+2025-06-15 20:56:13 [INFO]: Login realizado com sucesso {
+  "service": "gym-expert-api",
+  "userId": 1,
+  "email": "admin@example.com"
+}
+2025-06-15 20:56:15 [INFO]: Fetching all workouts, requested by user id: 1 {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:56:15 [INFO]: Found 20 workouts {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:56:15 [INFO]: Fetching all workouts, requested by user id: 1 {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:56:15 [INFO]: Found 20 workouts {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:57:01 [INFO]: Fetching all workouts, requested by user id: 1 {
+  "service": "gym-expert-api"
+}
+2025-06-15 20:57:01 [INFO]: Found 20 workouts {
+  "service": "gym-expert-api"
+}
+2025-06-15 21:10:35 [INFO]: Database connection has been established successfully. {
+  "service": "gym-expert-api"
+}
+2025-06-15 21:10:36 [INFO]: Database synchronized successfully. {
+  "service": "gym-expert-api"
+}
+2025-06-15 21:10:36 [INFO]: Server is running on port 5000 {
+  "service": "gym-expert-api"
+}
